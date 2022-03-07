@@ -1,3 +1,25 @@
 .vs/*
 ServerApi/bin/Debug/*
 ServerApi/obj/*
+
+# dependencies
+Client/react_client/node_modules
+Client/react_client/.pnp
+Client/react_client/*.pnp.js
+
+# testing
+Client/react_client/coverage
+
+# production
+Client/react_client/build
+
+# misc
+Client/react_client/.DS_Store
+Client/react_client/.env.local
+Client/react_client/.env.development.local
+Client/react_client/.env.test.local
+Client/react_client/.env.production.local
+
+Client/react_client/npm-debug.log*
+Client/react_client/yarn-debug.log*
+Client/react_client/yarn-error.log*
