@@ -1,14 +1,9 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace ServerApi.Hubs
+namespace ServerApi.Document
 {
     public class DocumentHub : Hub
     {
-        public async Task ChangeText(string documentId, string message)
-        {
-            await Clients.Group(documentId).SendAsync("TextChanged", message);
-        }
-
         public async Task SendChange(string documentId, int startPosition, int endPosition, string message, string user)
         {
             await Clients.Group(documentId).SendAsync("ApplyChange", startPosition, endPosition, message, user);

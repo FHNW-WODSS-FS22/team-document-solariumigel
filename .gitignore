@@ -1,6 +1,6 @@
-.vs/*
-ServerApi/bin/Debug/*
-ServerApi/obj/*
+*.vs*
+ServerApi/ServerApi/bin
+ServerApi/ServerApi/obj
 
 # dependencies
 Client/react_client/node_modules
@@ -23,3 +23,4 @@ Client/react_client/.env.production.local
 Client/react_client/npm-debug.log*
 Client/react_client/yarn-debug.log*
 Client/react_client/yarn-error.log*
+*.csproj.user

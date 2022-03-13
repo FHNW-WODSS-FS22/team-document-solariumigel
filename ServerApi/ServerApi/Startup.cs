@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using ServerApi.Hubs;
+using ServerApi.Document;
 
 namespace ServerApi
 {
@@ -27,7 +27,7 @@ namespace ServerApi
                         builder
                             .AllowAnyHeader()
                             .AllowAnyMethod()
-                            .WithOrigins("https://localhost:7251", "http://localhost:5251", "http://localhost:4200", "http://localhost:3000/")
+                            .WithOrigins("https://localhost:7251", "http://localhost:5251", "http://localhost:4200", "http://localhost:3000")
                             .AllowCredentials();
                     });
             });
