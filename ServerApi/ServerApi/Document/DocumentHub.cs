@@ -4,14 +4,14 @@ namespace ServerApi.Document
 {
     public class DocumentHub : Hub
     {
-        public async Task SendChange(string documentId, int startPosition, int endPosition, string message, string user)
+        public async Task SendChange(string documentId, string paragraphId, int startPosition, int endPosition, string message, string user)
         {
-            await Clients.Group(documentId).SendAsync("ApplyChange", startPosition, endPosition, message, user);
+            await Clients.Group(documentId).SendAsync("ApplyChange", paragraphId, startPosition, endPosition, message, user);
         }
 
-        public async Task SendChangePosition(string documentId, int newPosition, string user)
+        public async Task SendChangePosition(string documentId, string paragraphId, int newPosition, string user)
         {
-            await Clients.Group(documentId).SendAsync("ApplyChangePosition", newPosition, user);
+            await Clients.Group(documentId).SendAsync("ApplyChangePosition", paragraphId, newPosition, user);
         }
 
         public async Task AddToDocument(string documentId)
@@ -20,6 +20,11 @@ namespace ServerApi.Document
             await Groups.AddToGroupAsync(Context.ConnectionId, documentId);
 
             await Clients.Client(Context.ConnectionId).SendAsync("SetUserId", guid);
+        }
+
+        public async Task AddParagraph(string documentId)
+        { 
+            
         }
     }
 }
