@@ -1,6 +1,7 @@
 *.vs*
 ServerApi/ServerApi/bin
 ServerApi/ServerApi/obj
+ServerApi/Service
 
 # dependencies
 Client/react_client/node_modules
