@@ -1,1 +1,1 @@
-docker run --name DocServer -p 80:80 -p 81:81 --rm doc_server
+docker run --name DocServer -p 80:80 -p 81:81 --rm teamdocumentsolariumigel.azurecr.io/server
