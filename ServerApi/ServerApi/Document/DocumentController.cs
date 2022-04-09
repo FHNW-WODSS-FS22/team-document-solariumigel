@@ -6,10 +6,34 @@ namespace ServerApi.Document
     [ApiController]
     public class DocumentController : ControllerBase
     {
-        [HttpGet]
-        public List<string> GetDocuments()
+        private readonly IDocumentClient _documentClient;
+
+        public DocumentController(IDocumentClient documentClient)
         {
-            return new List<string>();
+            _documentClient = documentClient;
+        }
+
+        [HttpGet]
+        public IList<DocumentEntity> GetDocuments()
+        {
+            return _documentClient.FindAll();
+        }
+
+        [HttpPost]
+        public string PostDocuments([FromBody] DocumentData data)
+        {
+            var guid = Guid.NewGuid();
+            var document = new DocumentEntity 
+            {
+                Id = guid,
+                Owner = data.Owner,
+                Name = data.Name,
+            };
+
+            document.Paragraph.Add(new ParagraphEntity { Id = Guid.NewGuid(), Owner = data.Owner, Order = 0, Text = "" }) ;
+
+            _documentClient.Insert(document);
+            return guid.ToString();
         }
     }
 }

@@ -18,6 +18,10 @@ namespace ServerApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var databaseSettings = Configuration.GetSection("DocumentStoreDatabase");
+            services.Configure<DocumentDatabaseSettings>(databaseSettings);
+
+            services.AddSingleton<IDocumentClient, MongoDbDocumentClient>();
 
             services.AddCors(options =>
             {
@@ -62,7 +66,7 @@ namespace ServerApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<DocumentHub>("/document");
+                endpoints.MapHub<DocumentHub>("/documentSocket");
             });
         }
     }

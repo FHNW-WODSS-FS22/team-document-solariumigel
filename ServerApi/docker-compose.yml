@@ -1,0 +1,26 @@
+version: '3.1'
+
+services:
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    restart: always
+    volumes:
+      - ${WEBAPP_STORAGE_HOME}/site:/data/db
+      #- ./data:/data/db
+    ports:
+      - "27017:27017"
+
+  web:
+        build: .
+        ports:
+            - "8000:80"
+            - "44348:443"
+        depends_on:
+            - mongo
+        volumes:
+            - ${HOME}/.microsoft/usersecrets/:/root/.microsoft/usersecrets
+            - ${HOME}/.aspnet/https:/root/.aspnet/https/
+        links:
+          - mongo

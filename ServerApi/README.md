@@ -15,13 +15,14 @@ dotnet run
 
 ## Rest
 
-| Url | Verb | Return Value |
-|:-----|:--------:|:--------:| 
-| /api/document | GET | List of all documents |
+| Url | Verb | Return Value | Body |
+|:-----|:--------:|:--------:|:--------:| 
+| /api/document | GET | List of all documents | |
+| /api/document | POST | Create a new Document | name, owner|
 
 ## Events
 
-Url: /document
+Url: /documentSocketrr
 
 | Recived |  Send  | Parameters  | Description | 
 |:-----|:--------:|:--------:| :------:|
