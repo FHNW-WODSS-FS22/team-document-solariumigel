@@ -22,7 +22,7 @@ namespace ServerApi.Document
         [HttpPost]
         public string PostDocuments([FromBody] DocumentData data)
         {
-            var guid = new Guid("71e3cf38-6ce6-4613-a4dd-b0f907c8d078");
+            var guid = Guid.NewGuid();
             var document = new DocumentEntity 
             {
                 Id = guid,

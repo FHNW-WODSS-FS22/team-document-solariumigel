@@ -1,0 +1,1 @@
+docker build -t teamdocumentsolariumigel.azurecr.io/server .
