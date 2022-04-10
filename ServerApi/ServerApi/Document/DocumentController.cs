@@ -22,7 +22,7 @@ namespace ServerApi.Document
         [HttpPost]
         public string PostDocuments([FromBody] DocumentData data)
         {
-            var guid = Guid.NewGuid();
+            var guid = Guid.NewGuid().ToString();
             var document = new DocumentEntity 
             {
                 Id = guid,
@@ -30,10 +30,10 @@ namespace ServerApi.Document
                 Name = data.Name,
             };
 
-            document.Paragraph.Add(new ParagraphEntity { Id = Guid.NewGuid(), Owner = data.Owner, Order = 0, Text = "" }) ;
+            document.Paragraph.Add(new ParagraphEntity { Id = Guid.NewGuid().ToString(), Owner = data.Owner, Order = 0, Text = "" }) ;
 
             _documentClient.Insert(document);
-            return guid.ToString();
+            return guid;
         }
     }
 }

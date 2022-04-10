@@ -5,7 +5,7 @@ namespace ServerApi.Document
     public class ParagraphEntity
     {
         [BsonId]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         public string Owner { get; set; }
 

@@ -1,18 +1,15 @@
-import TextEditor from "./TextEditor"
-import Documents from "./Documents"
+import DoctumentEditor from "./DoctumentEditor"
+import DocumentsOverview from "./DocumentsOverview"
 import {
   Routes,
-  Route,
-  Navigate
+  Route
 } from "react-router-dom"
-import { v4 as uuidV4 } from "uuid"
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Documents/>} />
-      <Route path="/documents/:id" element={<TextEditor />} />
+      <Route path="/" element={<DocumentsOverview/>} />
+      <Route path="/documents/:id" element={<DoctumentEditor />} />
     </Routes>
   )
 }
-//element={<Navigate to={`/documents/${uuidV4()}`} />}
