@@ -7,5 +7,6 @@
         DocumentEntity Find(string documentId);
         void UpdateText(string documentId, string paragraphId, string message);
         void AddNewParagraph(string documentId, ParagraphEntity paragraph);
+        void Delete(string id);
     }
 }

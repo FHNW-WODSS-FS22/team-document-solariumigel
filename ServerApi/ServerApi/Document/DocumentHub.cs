@@ -38,10 +38,14 @@ namespace ServerApi.Document
             await Clients.Client(Context.ConnectionId).SendAsync("SetUserId", guid, document);
         }
 
-        public async Task AddParagraph(string documentId)
+        public async Task AddParagraph(string documentId, string user)
         { 
             var guid = Guid.NewGuid().ToString();
-            var paragraph = new ParagraphEntity{Id = guid};
+            var paragraph = new ParagraphEntity
+            {
+                Id = guid,
+                Owner=user
+            };
             _documentClient.AddNewParagraph(documentId, paragraph);
 
             await Clients.Group(documentId).SendAsync("AddNewParagraph", paragraph);

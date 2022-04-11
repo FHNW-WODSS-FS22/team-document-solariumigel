@@ -4,6 +4,7 @@ export default function ParagraphEditor(props) {
     const [htmlContent, sethtmlContent] = useState("")
     const [connection, setConnection] = useState()
     const [documentId, setDocumentId] = useState()
+    const [owner, setOwner] = useState()
 
     function change(event) {
         connection.send("SendChange", documentId, props.paragraph.id, 1, 1, event.target.value, "")
@@ -23,7 +24,6 @@ export default function ParagraphEditor(props) {
     };
 
     function getCaretPos(event) {
-        setposition(event.target.selectionStart)
     };
 
     function beforeInput(event){
@@ -34,11 +34,11 @@ export default function ParagraphEditor(props) {
     function onKeyDown(event){
         console.log("onKeyDown")
         console.log(event)
-        setposition(event.target.selectionStart)
     };
 
     useEffect(() => {
         sethtmlContent(props.paragraph.text);
+        setOwner(props.paragraph.owner);
         setConnection(props.connection);
         setDocumentId(props.documentId);
 
@@ -48,6 +48,7 @@ export default function ParagraphEditor(props) {
     return (
         <div>  
             <br /> 
+            Paragraph owner: {owner}
             <br />
             <textarea rows='4' cols='40'
                 // onClick={(event) => getCaretPos(event)}

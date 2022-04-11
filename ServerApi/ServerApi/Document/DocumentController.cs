@@ -35,5 +35,10 @@ namespace ServerApi.Document
             _documentClient.Insert(document);
             return guid;
         }
+
+        [HttpDelete("{id}")]
+        public void DeleteDocument(string id){
+            _documentClient.Delete(id);
+        }
     }
 }

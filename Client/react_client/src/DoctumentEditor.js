@@ -8,16 +8,15 @@ export default function DoctumentEditor() {
     const { id: documentId } = useParams();
     const [connection, setConnection] = useState()
     const [document, setDocument] = useState()
-    // const [paragraphData, setParagraphData] = useState({
-    //     list: initialList
-    // })
+    const [user, setUser] = useState()
 
     function SetUserId(userId, document){
         setDocument(document)
+        setUser(userId)
     };
 
     function AddParagraph(){
-        connection.send("AddParagraph", documentId);
+        connection.send("AddParagraph", documentId, user);
     }
 
     function addNewParagraph(newParagraph){
@@ -53,6 +52,7 @@ export default function DoctumentEditor() {
                 <br />
                 Document Owner: {document.owner}
                 <br />
+                Current User: {user}
                 <br />
                 <br />
                 <button onClick={() => AddParagraph()}>Add Paragraph</button>

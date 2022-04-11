@@ -22,13 +22,20 @@ class DocumentsOverview extends Component {
     }
 
     createNewDocument(){
-        console.log("adfasdf");
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ Owner: 'Julian', Name: "Hikaru no go" })
         };
         fetch('https://localhost:7287/api/document', requestOptions)
+        .then(() => this.loadDocuments());
+    }
+
+    deleteDocument(documentId){
+        const requestOptions = {
+            method: 'DELETE'
+        };
+        fetch('https://localhost:7287/api/document/'+documentId, requestOptions)
         .then(() => this.loadDocuments());
     }
 
@@ -45,12 +52,14 @@ class DocumentsOverview extends Component {
                     <th>Name</th>
                     <th></th>
                     <th>Owner</th>
+                    <th></th>
                 </tr>
                 {this.state.documents.map((document) => (
                     <tr key={document.id}>
                         <td><Link  to={"/documents/" + document.id}>{document.name}</Link></td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td>{document.owner}</td>                        
+                        <td>{document.owner}</td>   
+                        <td><button onClick={() => this.deleteDocument(document.id)}>delete</button></td>                        
                     </tr>
                 ))}
             </table>

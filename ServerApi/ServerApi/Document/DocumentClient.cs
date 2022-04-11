@@ -56,5 +56,10 @@ namespace ServerApi.Document
             var update = Builders<DocumentEntity>.Update.Push(a => a.Paragraph, paragraph);
             var result = _documents.UpdateOne(model => model.Id == documentId, update);
         }
+
+        public void Delete(string id)
+        {
+            _documents.DeleteOne(model => model.Id == id);
+        }
     }
 }
