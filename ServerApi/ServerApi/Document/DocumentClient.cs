@@ -61,5 +61,11 @@ namespace ServerApi.Document
         {
             _documents.DeleteOne(model => model.Id == id);
         }
+
+        public void DeleteParagraph(string documentId, string paragraphId) {
+            var filter = Builders<DocumentEntity>.Filter.Where(document => document.Id == documentId);
+            var update = Builders<DocumentEntity>.Update.PullFilter(document => document.Paragraph, Builders<ParagraphEntity>.Filter.Where(paragraph => paragraph.Id == paragraphId));
+            _documents.UpdateOne(filter, update);
+        }
     }
 }

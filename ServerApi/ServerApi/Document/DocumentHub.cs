@@ -50,5 +50,12 @@ namespace ServerApi.Document
 
             await Clients.Group(documentId).SendAsync("AddNewParagraph", paragraph);
         }
+
+        public async Task DeleteParagraph(string documentId, string paragraphId)
+        { 
+            _documentClient.DeleteParagraph(documentId, paragraphId);
+
+            await Clients.Group(documentId).SendAsync("ListenDeleteParagraph", paragraphId);
+        }
     }
 }
