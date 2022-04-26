@@ -12,10 +12,10 @@ namespace ServerApi.Document
             _documentClient = documentClient;
         }
 
-        public async Task SendChange(string documentId, string paragraphId, int startPosition, int endPosition, string message, string user)
+        public async Task UpdateMessage(string documentId, string paragraphId, int startPosition, int endPosition, string message, string user)
         {
             _documentClient.UpdateText(documentId, paragraphId, message);
-            await Clients.Group(documentId).SendAsync("ApplyChange", paragraphId, startPosition, endPosition, message, user);
+            await Clients.Group(documentId).SendAsync("ListenForMessage", paragraphId, startPosition, endPosition, message, user);
         }
 
         public async Task SendChangePosition(string documentId, string paragraphId, int newPosition, string user)
@@ -38,7 +38,7 @@ namespace ServerApi.Document
             await Clients.Client(Context.ConnectionId).SendAsync("SetUserId", guid, document);
         }
 
-        public async Task AddParagraph(string documentId, string user)
+        public async Task CreateParagraph(string documentId, string user)
         { 
             var guid = Guid.NewGuid().ToString();
             var paragraph = new ParagraphEntity
@@ -46,16 +46,16 @@ namespace ServerApi.Document
                 Id = guid,
                 Owner=user
             };
-            _documentClient.AddNewParagraph(documentId, paragraph);
+            _documentClient.CreateParagraph(documentId, paragraph);
 
-            await Clients.Group(documentId).SendAsync("AddNewParagraph", paragraph);
+            await Clients.Group(documentId).SendAsync("ListenForCreateParagraph", paragraph);
         }
 
         public async Task DeleteParagraph(string documentId, string paragraphId)
         { 
             _documentClient.DeleteParagraph(documentId, paragraphId);
 
-            await Clients.Group(documentId).SendAsync("ListenDeleteParagraph", paragraphId);
+            await Clients.Group(documentId).SendAsync("ListenForDeleteParagraph", paragraphId);
         }
     }
 }

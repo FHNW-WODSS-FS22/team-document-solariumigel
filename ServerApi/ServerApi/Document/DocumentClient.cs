@@ -51,10 +51,10 @@ namespace ServerApi.Document
             _documents.UpdateOne(test, setter);
         }
 
-        public void AddNewParagraph(string documentId, ParagraphEntity paragraph)
+        public void CreateParagraph(string documentId, ParagraphEntity paragraph)
         {
             var update = Builders<DocumentEntity>.Update.Push(a => a.Paragraph, paragraph);
-            var result = _documents.UpdateOne(model => model.Id == documentId, update);
+            _documents.UpdateOne(model => model.Id == documentId, update);
         }
 
         public void Delete(string id)
