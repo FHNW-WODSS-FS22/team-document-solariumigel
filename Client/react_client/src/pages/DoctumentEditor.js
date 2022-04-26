@@ -1,77 +1,59 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import ParagraphList from "../components/ParagraphList";
 
 /**
  * Editor component
  */
-class DoctumentEditor extends Component {
+export default function DoctumentEditor(props) {
+  const { api, connectionBuilder } = props;
+  const [connection, setConnection] = useState();
+  const [document, setDocument] = useState();
+  const { user } = useLocation().state;
+
   /**
    * Constructor
-   * @param {object} props
    */
-  constructor(props) {
-    super(props);
-    this.api = props.api;
-    this.connectionBuilder = props.connectionBuilder;
-    this.state = {
-      connection: null,
-      document: this.props.api.selected,
-      user: null,
-    };
-  }
+  useEffect(() => {
+    setConnection(connectionBuilder.buildConnection());
+  }, []);
+
+  useEffect(() => {
+    if (api) {
+      setDocument(api.selected);
+    }
+    if (connection) {
+      connection.start().then(() => {
+        connection.send("AddToDocument", document.id);
+        connection.on("SetUserId", listenForDocument);
+      });
+    }
+  }, [connection]);
 
   /**
-   * Called when component did mount
+   * Listen for document
+   * @param {object} paragraphId
    */
-  componentDidMount() {
-    this.createConnection();
-  }
+  const listenForDocument = (userId) => {
+    // this.setState({ user: userId });
+  };
 
-  /**
-   * Create connection to hub through singalR
-   */
-  createConnection() {
-    this.setState(
-      {
-        connection: this.connectionBuilder.buildConnection(),
-      },
-      () => {
-        this.state.connection.start().then(() => {
-          this.state.connection.send("AddToDocument", this.api.selected.id);
-          this.state.connection.on("SetUserId", this.listenForDocument);
-        });
-      }
-    );
-  }
-
-  listenForDocument(userId, document) {
-    this.setState({ user: userId });
-  }
-
-  render() {
-    return (
-      <div>
-        <Link to={"/"}>back to the overview</Link>
-        {this.state.document != null && (
-          <div>
-            Document name: {this.state.document.name}
-            <br />
-            Document Owner: {this.state.document.owner}
-            <br />
-            Current User: {this.state.user}
-            <br />
-            <br />
-            <ParagraphList
-              connection={this.state.connection}
-              documentId={this.state.document.id}
-              paragraphs={this.state.document.paragraph}
-            />
-          </div>
-        )}
-      </div>
-    );
-  }
+  return (
+    <div>
+      <Link to={"/"}>back to the overview</Link>
+      {document != null && (
+        <div>
+          <p>Document name: {document.name}</p>
+          <p>Document Owner: {document.owner}</p>
+          <p>Current User: {user}</p>
+          <ParagraphList
+            connection={connection}
+            documentId={document.id}
+            user={user}
+            paragraphs={document.paragraph}
+          />
+        </div>
+      )}
+    </div>
+  );
 }
-
-export default DoctumentEditor;

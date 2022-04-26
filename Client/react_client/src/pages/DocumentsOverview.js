@@ -12,7 +12,11 @@ class DocumentsOverview extends Component {
   constructor(props) {
     super(props);
     this.api = props.api;
-    this.state = { documents: [] };
+    this.state = {
+      documents: [],
+      user: "Hans Muster",
+      documentName: "Datei-265",
+    };
   }
 
   /**
@@ -36,7 +40,7 @@ class DocumentsOverview extends Component {
    */
   createDocument() {
     this.api
-      .createDocument({ Owner: "Julian", Name: "Hikaru no go" })
+      .createDocument({ Owner: this.state.user, Name: this.state.documentName })
       .then(() => {
         this.setState({ documents: [...this.api.documents] });
       });
@@ -55,6 +59,19 @@ class DocumentsOverview extends Component {
   render() {
     return (
       <div>
+        <div>
+          <p>
+            User:{" "}
+            <input
+              value={this.state.user}
+              onChange={(e) => this.setState({ user: e.target.value })}
+            />
+          </p>
+        </div>
+        <input
+          value={this.state.documentName}
+          onChange={(e) => this.setState({ documentName: e.target.value })}
+        />
         <button onClick={() => this.createDocument()}>Add new Document</button>
         <br />
         <br />
@@ -72,6 +89,7 @@ class DocumentsOverview extends Component {
               <td>
                 <Link
                   to={"/documents/" + document.id}
+                  state={{ user: this.state.user }}
                   onClick={() => (this.api.selected = document)}
                 >
                   {document.name}

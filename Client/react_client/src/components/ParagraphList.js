@@ -6,7 +6,7 @@ import Paragraph from "../components/Paragraph";
  * @param props List of all paragraphs component
  */
 export default function ParagraphList(props) {
-  const { connection, documentId } = props;
+  const { connection, documentId, user } = props;
   const [paragraphs, setParagraphs] = useState(props.paragraphs);
 
   /**
@@ -23,7 +23,7 @@ export default function ParagraphList(props) {
    * Create a new paragraph
    */
   const createParagraph = () => {
-    connection.send("CreateParagraph", documentId, "TODO");
+    connection.send("CreateParagraph", documentId, user);
   };
 
   /**
@@ -55,15 +55,16 @@ export default function ParagraphList(props) {
   return (
     <div>
       <button onClick={() => createParagraph()}>Add Paragraph</button>
-      {paragraphs.map((paragraph) => (
-        <Paragraph
-          connection={connection}
-          documentId={documentId}
-          paragraph={paragraph}
-          message={paragraph.text}
-          onDelete={deleteParagraph}
-        />
-      ))}
+      {paragraphs != null &&
+        paragraphs.map((paragraph) => (
+          <Paragraph
+            connection={connection}
+            documentId={documentId}
+            paragraph={paragraph}
+            message={paragraph.text}
+            onDelete={deleteParagraph}
+          />
+        ))}
     </div>
   );
 }
