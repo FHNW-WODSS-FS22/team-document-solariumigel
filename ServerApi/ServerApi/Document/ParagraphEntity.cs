@@ -9,7 +9,7 @@ namespace ServerApi.Document
 
         public string Owner { get; set; }
 
-        public int Order { get; set; }
+        public int Position { get; set; }
 
         public string Text { get; set; }
     }

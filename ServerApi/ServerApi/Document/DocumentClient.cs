@@ -51,6 +51,17 @@ namespace ServerApi.Document
             _documents.UpdateOne(test, setter);
         }
 
+        public void UpdatePosition(string documentId, string paragraphId, int position) {
+            var filter = Builders<DocumentEntity>.Filter;
+            var test = filter.And(
+                filter.Eq(x => x.Id, documentId),
+                filter.ElemMatch(x => x.Paragraph, p => p.Id == paragraphId)
+            );
+
+            var setter = Builders<DocumentEntity>.Update.Set("Paragraph.$.Position", position);
+            _documents.UpdateOne(test, setter);
+        }
+
         public void CreateParagraph(string documentId, ParagraphEntity paragraph)
         {
             var update = Builders<DocumentEntity>.Update.Push(a => a.Paragraph, paragraph);

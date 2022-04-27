@@ -23,7 +23,16 @@ export default function ParagraphList(props) {
    * Create a new paragraph
    */
   const createParagraph = () => {
-    connection.send("CreateParagraph", documentId, user);
+    connection.send("CreateParagraph", documentId, user, paragraphs.length);
+  };
+
+  /**
+   * Update a paragraph
+   * @param {object} paragraph
+   */
+  const updateParagraph = (paragraph) => {
+    const copy = [...paragraphs.filter((p) => p.id !== paragraph.id)];
+    setParagraphs([copy, paragraph]);
   };
 
   /**
@@ -52,19 +61,28 @@ export default function ParagraphList(props) {
     );
   };
 
+  /**
+   * Sort all paragraphs according to their position
+   */
+  const sortParagraphs = () => {
+    const copy = [...paragraphs];
+    copy.sort((a, b) => a.position > b.position);
+    console.log(copy);
+    setParagraphs(copy);
+  };
+
   return (
     <div>
       <button onClick={() => createParagraph()}>Add Paragraph</button>
-      {paragraphs != null &&
-        paragraphs.map((paragraph) => (
-          <Paragraph
-            connection={connection}
-            documentId={documentId}
-            paragraph={paragraph}
-            message={paragraph.text}
-            onDelete={deleteParagraph}
-          />
-        ))}
+      {paragraphs.map((paragraph) => (
+        <Paragraph
+          connection={connection}
+          documentId={documentId}
+          paragraph={paragraph}
+          numberOfParagraphs={paragraphs.length}
+          onDelete={deleteParagraph}
+        />
+      ))}
     </div>
   );
 }

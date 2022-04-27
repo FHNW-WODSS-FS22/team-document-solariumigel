@@ -12,15 +12,16 @@ namespace ServerApi.Document
             _documentClient = documentClient;
         }
 
-        public async Task UpdateMessage(string documentId, string paragraphId, int startPosition, int endPosition, string message, string user)
+        public async Task UpdateMessage(string documentId, string paragraphId, string message)
         {
             _documentClient.UpdateText(documentId, paragraphId, message);
-            await Clients.Group(documentId).SendAsync("ListenForMessage", paragraphId, startPosition, endPosition, message, user);
+            await Clients.Group(documentId).SendAsync("ListenForMessage", paragraphId, message);
         }
 
-        public async Task SendChangePosition(string documentId, string paragraphId, int newPosition, string user)
+        public async Task UpdatePosition(string documentId, string paragraphId, int position)
         {
-            await Clients.Group(documentId).SendAsync("ApplyChangePosition", paragraphId, newPosition, user);
+            _documentClient.UpdatePosition(documentId, paragraphId, position);
+            await Clients.Group(documentId).SendAsync("ListenForPosition", paragraphId, position);
         }
 
         public async Task SendTestEvent()
@@ -38,13 +39,14 @@ namespace ServerApi.Document
             await Clients.Client(Context.ConnectionId).SendAsync("SetUserId", guid, document);
         }
 
-        public async Task CreateParagraph(string documentId, string user)
+        public async Task CreateParagraph(string documentId, string user, int position)
         { 
             var guid = Guid.NewGuid().ToString();
             var paragraph = new ParagraphEntity
             {
                 Id = guid,
-                Owner=user
+                Owner=user,
+                Position=position
             };
             _documentClient.CreateParagraph(documentId, paragraph);
 
