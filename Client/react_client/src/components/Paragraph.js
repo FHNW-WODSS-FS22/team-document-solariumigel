@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 export default function Paragraph(props) {
   const { connection, documentId, numberOfParagraphs, onDelete } = props;
   const [paragraph, setParagraph] = useState(props.paragraph);
+  const [message, setMessage] = useState(props.message);
+  const [position, setPosition] = useState(props.position);
 
   /**
    * Constructor
@@ -34,7 +36,7 @@ export default function Paragraph(props) {
    */
   const listenForMessage = (paragraphId, message) => {
     if (paragraph.id === paragraphId) {
-      setParagraph({ ...paragraph, text: message });
+      setMessage(message);
     }
   };
 
@@ -43,7 +45,7 @@ export default function Paragraph(props) {
    */
   const movePositionUp = () => {
     // Increase new position by one
-    const newPosition = paragraph.position + 1;
+    const newPosition = position + 1;
     // Check if position would be higher than total numbers of paragraphs
     if (newPosition > numberOfParagraphs) return;
     // Update the position of the paragraph
@@ -55,7 +57,7 @@ export default function Paragraph(props) {
    */
   const movePositionDown = () => {
     // Decrease new position by one
-    const newPosition = paragraph.position - 1;
+    const newPosition = position - 1;
     // Check if position would be below zero
     if (newPosition < 0) return;
     // Update the position of the paragraph
@@ -77,7 +79,7 @@ export default function Paragraph(props) {
    */
   const listenForPosition = (paragraphId, position) => {
     if (paragraph.id === paragraphId) {
-      setParagraph({ ...paragraph, position: position });
+      setPosition(position);
     }
   };
 
@@ -87,14 +89,14 @@ export default function Paragraph(props) {
         Paragraph owner: {paragraph.owner}
         <button onClick={() => onDelete(paragraph.id)}>Delete Paragraph</button>
         <button onClick={() => movePositionUp()}>Up</button>
-        {paragraph.position}
+        {position}
         <button onClick={() => movePositionDown()}>Down</button>
       </div>
       <textarea
         rows="4"
         cols="40"
         onChange={(e) => updateMessage(e.target.value)}
-        value={paragraph.text}
+        value={message}
       ></textarea>
     </div>
   );

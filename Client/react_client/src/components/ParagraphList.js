@@ -79,6 +79,8 @@ export default function ParagraphList(props) {
           connection={connection}
           documentId={documentId}
           paragraph={paragraph}
+          message={paragraph.message}
+          position={paragraph.position}
           numberOfParagraphs={paragraphs.length}
           onDelete={deleteParagraph}
         />
