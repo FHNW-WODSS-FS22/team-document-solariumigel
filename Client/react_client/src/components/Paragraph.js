@@ -47,7 +47,7 @@ export default function Paragraph(props) {
     // Increase new position by one
     const newPosition = position + 1;
     // Check if position would be higher than total numbers of paragraphs
-    if (newPosition > numberOfParagraphs) return;
+    if (newPosition >= numberOfParagraphs) return;
     // Update the position of the paragraph
     updatePosition(newPosition);
   };
