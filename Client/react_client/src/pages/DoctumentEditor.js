@@ -59,7 +59,7 @@ export default function DoctumentEditor(props) {
               <button className="addParagraph" onClick={() => createParagraph()}></button>
             </div>
             <div className="rightTop">
-              <p>Owner: {document.owner}</p>
+              <p>Document Owner: {document.owner}</p>
               <p className="userName">User: {user}</p>
             </div>
           </div>

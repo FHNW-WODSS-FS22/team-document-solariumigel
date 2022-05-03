@@ -88,7 +88,9 @@ export default function Paragraph(props) {
   return (
     <div className="cardParagraph">
       <div className="paragraphHeader">
-        <div className="left"> Paragraph owner: {paragraph.owner} </div>
+        <div className="left"> 
+        <p className="pOwnerTxt">Paragraph owner: </p>
+        {paragraph.owner} </div>
         <button className="deleteBtn" onClick={() => onDelete(paragraph.id)}></button>
       </div>
       <div className="paragraphBottom">

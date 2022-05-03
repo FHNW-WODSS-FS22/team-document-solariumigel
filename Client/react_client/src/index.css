@@ -89,11 +89,7 @@ Link{
 }
 
 .userName{
-  padding-left: 5px;
-}
-
-.anzDoc{
-  margin-right: 25px;
+  padding-left: 1rem;
 }
 
 .docInput{
@@ -286,5 +282,15 @@ Link{
   background-color: transparent;
   border: none;
   cursor: pointer;
+}
+
+.left{
+  display: flex;
+
+}
+
+.pOwnerTxt{
+  color: var(--highlight);
+  padding-right: 5px;
 }
 
