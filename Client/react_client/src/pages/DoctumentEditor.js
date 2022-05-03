@@ -10,6 +10,7 @@ export default function DoctumentEditor(props) {
   const [connection, setConnection] = useState();
   const [document, setDocument] = useState();
   const { user } = useLocation().state;
+  const [paragraphs, setParagraphs] = useState();
 
   /**
    * Constructor
@@ -21,14 +22,23 @@ export default function DoctumentEditor(props) {
   useEffect(() => {
     if (api) {
       setDocument(api.selected);
+      setParagraphs(api.selected.paragraph);
     }
     if (connection) {
       connection.start().then(() => {
-        connection.send("AddToDocument", document.id);
+        connection.send("AddToDocument", api.selected.id);
         connection.on("SetUserId", listenForDocument);
       });
     }
   }, [connection]);
+
+
+  /**
+   * Create a new paragraph
+   */
+  const createParagraph = () => {
+    connection.send("CreateParagraph", api.selected.id, user, paragraphs.length);
+  };
 
   /**
    * Listen for document
@@ -37,20 +47,27 @@ export default function DoctumentEditor(props) {
   const listenForDocument = (userId) => {
     // this.setState({ user: userId });
   };
-
+  
   return (
     <div>
-      <Link to={"/"}>back to the overview</Link>
       {document != null && (
         <div>
-          <p>Document name: {document.name}</p>
-          <p>Document Owner: {document.owner}</p>
-          <p>Current User: {user}</p>
+          <div className="top">
+            <div className="topLeft">
+              <Link className="backArrow" to={"/"}></Link>
+              <div className="documentTitle">{document.name}</div>
+              <button className="addParagraph" onClick={() => createParagraph()}></button>
+            </div>
+            <div className="rightTop">
+              <p>Owner: {document.owner}</p>
+              <p className="userName">User: {user}</p>
+            </div>
+          </div>
           <ParagraphList
             connection={connection}
             documentId={document.id}
             user={user}
-            paragraphs={document.paragraph}
+            paragraphs={paragraphs}
           />
         </div>
       )}
