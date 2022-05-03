@@ -83,21 +83,27 @@ export default function Paragraph(props) {
     }
   };
 
+  console.log(paragraph.owner)
+
   return (
-    <div>
-      <div className="paragraph__header">
-        Paragraph owner: {paragraph.owner}
-        <button onClick={() => onDelete(paragraph.id)}>Delete Paragraph</button>
-        <button onClick={() => movePositionUp()}>Up</button>
-        {position}
-        <button onClick={() => movePositionDown()}>Down</button>
+    <div className="cardParagraph">
+      <div className="paragraphHeader">
+        <div className="left"> Paragraph owner: {paragraph.owner} </div>
+        <button className="deleteBtn" onClick={() => onDelete(paragraph.id)}></button>
       </div>
-      <textarea
-        rows="4"
-        cols="40"
-        onChange={(e) => updateMessage(e.target.value)}
-        value={message}
-      ></textarea>
+      <div className="paragraphBottom">
+        <textarea
+          rows="4"
+          cols="40"
+          onChange={(e) => updateMessage(e.target.value)}
+          value={message}
+        ></textarea>
+        <div className="paragraphRating"> 
+          <button className="arrowUp" onClick={() => movePositionUp()}></button>
+            <p className="positionTxt">{position}</p>
+          <button className="arrowDown" onClick={() => movePositionDown()}></button>
+        </div>
+      </div> 
     </div>
   );
-}
+}  
