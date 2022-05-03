@@ -20,13 +20,6 @@ export default function ParagraphList(props) {
   });
 
   /**
-   * Create a new paragraph
-   */
-  const createParagraph = () => {
-    connection.send("CreateParagraph", documentId, user, paragraphs.length);
-  };
-
-  /**
    * Update a paragraph
    * @param {object} paragraph
    */
@@ -72,8 +65,7 @@ export default function ParagraphList(props) {
   };
 
   return (
-    <div>
-      <button onClick={() => createParagraph()}>Add Paragraph</button>
+    <div className="paragraphs">
       {paragraphs.map((paragraph) => (
         <Paragraph
           connection={connection}
