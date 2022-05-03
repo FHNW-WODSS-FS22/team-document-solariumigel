@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import AddDocumentPopup from "../components/AddDocumentPopup";
+import LoginPopup from "../components/LoginPopup";
 
 /**
  * Overview Component
@@ -14,8 +16,10 @@ class DocumentsOverview extends Component {
     this.api = props.api;
     this.state = {
       documents: [],
-      user: "Hans Muster",
-      documentName: "Datei-265",
+      user: "",
+      documentName: "",
+      addDocumentPopup: false,
+      loginPopup: false,
     };
   }
 
@@ -56,55 +60,65 @@ class DocumentsOverview extends Component {
     });
   }
 
+  changeDocumentName(value){
+    this.setState({ documentName: value})
+  }
+
+  changeUserName(value){
+    this.setState({ user: value})
+  }
+
   render() {
     return (
       <div>
-        <div>
-          <p>
-            User:{" "}
-            <input
-              value={this.state.user}
-              onChange={(e) => this.setState({ user: e.target.value })}
-            />
-          </p>
+        <div className="top">
+          <div className="topLeft">
+            <h1 className="documentTitle">
+                Documents
+            </h1>
+            <button className="addDocument" onClick={() => this.setState({addDocumentPopup: true})}>
+            </button> 
+          </div>
+          <div className="rightTop">
+            <button className="user" onClick={() => this.setState({loginPopup: true})}>
+            </button>
+          </div>
         </div>
-        <input
-          value={this.state.documentName}
-          onChange={(e) => this.setState({ documentName: e.target.value })}
-        />
-        <button onClick={() => this.createDocument()}>Add new Document</button>
-        <br />
-        <br />
-        Anzahl Dokumente: {this.state.documents.length}
-        <br />
-        <table>
-          <tr>
-            <th>Name</th>
-            <th></th>
-            <th>Owner</th>
-            <th></th>
-          </tr>
-          {this.state.documents.map((document) => (
-            <tr key={document.id}>
-              <td>
-                <Link
-                  to={"/documents/" + document.id}
-                  state={{ user: this.state.user }}
-                  onClick={() => (this.api.selected = document)}
+        <div className="documentContent">
+        <LoginPopup
+                onChange={(value) => {this.changeUserName(value);}} 
+                trigger={this.state.loginPopup} 
+                setTrigger={() => this.setState({loginPopup: false})}
                 >
-                  {document.name}
-                </Link>
-              </td>
-              <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-              <td>{document.owner}</td>
-              <td>
-                <button onClick={() => this.deleteDocument(document.id)}>
-                  delete
-                </button>
-              </td>
-            </tr>
+                </LoginPopup>
+          <AddDocumentPopup  
+            onChange={(value) => {this.changeDocumentName(value);}} 
+            trigger={this.state.addDocumentPopup} 
+            setTrigger={() => this.setState({addDocumentPopup: false})}
+            createDoc = {() => this.createDocument({Owner: this.state.user, Name: this.state.documentName })}
+          >
+          </AddDocumentPopup>
+        </div>
+        <div className="documents">
+          {this.state.documents.map((document) => (
+              <div key={document.id} className="card">
+                <Link
+                      to={"/documents/" + document.id}
+                      state={{user: this.state.user}}
+                      onClick={() => (this.api.selected = document)}
+                      style={{ textDecoration: 'none' }}
+                  >
+                  <img className="docImg" src="https://picsum.photos/400"/>
+                  <div>
+                    <div className="docName"> {document.name}</div>
+                    <div className="docOwner"> Owner: {document.owner}</div>
+                  </div>
+                  </Link>
+                  <button className="deleteBtn" onClick={(e) => this.deleteDocument(document.id)}>
+                  </button>
+              </div>
           ))}
-        </table>
+        </div>
       </div>
     );
   }
