@@ -209,6 +209,7 @@ Link{
   background-color: transparent;
   border: none;
   z-index: 1000;
+  cursor: pointer;
 }
 
 .backArrow{
