@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { HubConnectionState } from "@microsoft/signalr";
+import { Link, useParams  } from "react-router-dom";
 import ParagraphList from "../components/ParagraphList";
+import Paragraph from "../components/Paragraph";
 
 /**
  * Editor component
@@ -9,8 +11,8 @@ export default function DoctumentEditor(props) {
   const { api, connectionBuilder } = props;
   const [connection, setConnection] = useState();
   const [document, setDocument] = useState();
-  const { user } = useLocation().state;
-  const [paragraphs, setParagraphs] = useState();
+  const [user, setUser] = useState();
+  const { id } = useParams();
 
   /**
    * Constructor
@@ -19,12 +21,18 @@ export default function DoctumentEditor(props) {
     setConnection(connectionBuilder.buildConnection());
   }, []);
 
-  useEffect(() => {
-    if (api) {
-      setDocument(api.selected);
-      setParagraphs(api.selected.paragraph);
+  useEffect(()  => {
+    if(api)
+    {
+      api.getDocument(id).then(doc => {
+        setDocument(doc);
+      });
     }
-    if (connection) {
+  }, [api]);
+
+  useEffect(() => {
+    if(connection && connection.state  !== HubConnectionState.Connected)
+    {
       connection.start().then(() => {
         connection.send("AddToDocument", api.selected.id);
         connection.on("SetUserId", listenForDocument);
@@ -37,7 +45,7 @@ export default function DoctumentEditor(props) {
    * Create a new paragraph
    */
   const createParagraph = () => {
-    connection.send("CreateParagraph", api.selected.id, user, paragraphs.length);
+    connection.send("CreateParagraph", api.selected.id, user);
   };
 
   /**
@@ -45,16 +53,47 @@ export default function DoctumentEditor(props) {
    * @param {object} paragraphId
    */
   const listenForDocument = (userId) => {
-    // this.setState({ user: userId });
+    setUser(userId)
   };
-  
+
+  /**
+ * Delete a paragraph
+ * @param {object} paragraphId
+ */
+  const deleteParagraph = (paragraphId) => {
+    connection.send("DeleteParagraph", document.id, paragraphId);
+  };
+
+  const ConverToItems = () => {
+    console.log("ConverToItems")
+    const sorted = document.paragraph.sort((a, b) => { return a.position > b.position ? 1 : -1});
+    const sortedItems = sorted.map(paragraph => {
+      return <Paragraph
+        connection={connection}
+        documentId={document.id}
+        paragraph={paragraph}
+        text={paragraph.text}
+        position={paragraph.position}
+        user={user}
+        key={paragraph.id}
+        onDelete={deleteParagraph}
+      />
+    })
+    return sortedItems;
+  }
+
+  const NavigateBack = () => {
+    connection.send("RemoveFromDocument", api.selected.id, user);
+    connection.stop();
+  }
+
   return (
     <div>
       {document != null && (
         <div>
           <div className="top">
             <div className="topLeft">
-              <Link className="backArrow" to={"/"}></Link>
+              <Link className="backArrow" onClick={NavigateBack} to={"/"}></Link>
               <div className="documentTitle">{document.name}</div>
               <button className="addParagraph" onClick={() => createParagraph()}></button>
             </div>
@@ -67,7 +106,8 @@ export default function DoctumentEditor(props) {
             connection={connection}
             documentId={document.id}
             user={user}
-            paragraphs={paragraphs}
+            paragraphs={document.paragraph}
+            paragraphItems={ConverToItems()}
           />
         </div>
       )}

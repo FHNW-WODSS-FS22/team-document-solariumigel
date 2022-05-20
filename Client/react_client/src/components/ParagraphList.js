@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { HubConnectionState } from "@microsoft/signalr";
 import Paragraph from "../components/Paragraph";
 
 /**
@@ -8,75 +9,65 @@ import Paragraph from "../components/Paragraph";
 export default function ParagraphList(props) {
   const { connection, documentId, user } = props;
   const [paragraphs, setParagraphs] = useState(props.paragraphs);
+  const [paragraphItems, setParagraphItems] = useState(props.paragraphItems);
 
   /**
    * Constructor
    */
-  useEffect(() => {
-    if (props.connection) {
+  useEffect(() => {    
+    if (props.connection && props.connection.state  !== HubConnectionState.Connected) {
       connection.on("ListenForCreateParagraph", listenForCreateParagraph);
       connection.on("ListenForDeleteParagraph", listenForDeleteParagraph);
+      connection.on("ResortParagraphs", sortParagraphs);
     }
   });
-
-  /**
-   * Update a paragraph
-   * @param {object} paragraph
-   */
-  const updateParagraph = (paragraph) => {
-    const copy = [...paragraphs.filter((p) => p.id !== paragraph.id)];
-    setParagraphs([copy, paragraph]);
-  };
-
-  /**
-   * Delete a paragraph
-   * @param {object} paragraphId
-   */
-  const deleteParagraph = (paragraphId) => {
-    connection.send("DeleteParagraph", documentId, paragraphId);
-  };
-
-  /**
-   * Listen for creation of a paragraph
-   * @param {object} paragraph
-   */
-  const listenForCreateParagraph = (paragraph) => {
-    setParagraphs([...paragraphs, paragraph]);
-  };
 
   /**
    * Listen for deletion of a paragraph
    * @param {object} paragraphId
    */
-  const listenForDeleteParagraph = (paragraphId) => {
-    setParagraphs(
-      paragraphs.filter((paragraph) => paragraph.id !== paragraphId)
-    );
+   const listenForDeleteParagraph = (paragraphId) => {
+    setParagraphs(paragraphs.filter((paragraph) => paragraph.id !== paragraphId));
+
+    setParagraphItems((paragraphItems.filter((paragraph) => paragraph.props.paragraph.id !== paragraphId)));
+  };
+  
+  /**
+   * Listen for creation of a paragraph
+   * @param {object} paragraph
+   */
+  const listenForCreateParagraph = (paragraph) => {
+    const paragraphItem = <Paragraph
+            connection={connection}
+            documentId={documentId}
+            paragraph={paragraph}
+            text={paragraph.text}
+            position={paragraph.position}
+            user={user}
+            key={paragraph.id}
+            // onDelete={deleteParagraph}
+          />
+    setParagraphItems(paragraphItems.concat(paragraphItem));
+    setParagraphs(paragraphs.concat(paragraph));
+    sortParagraphs();
   };
 
   /**
    * Sort all paragraphs according to their position
    */
   const sortParagraphs = () => {
-    const copy = [...paragraphs];
-    copy.sort((a, b) => a.position > b.position);
-    console.log(copy);
-    setParagraphs(copy);
+    console.log("sortParagraphs");
+    const sorted = [...paragraphItems].sort((a, b) => b.props.paragraph.position < a.props.paragraph.position ? 1 : -1);    
+    setParagraphItems(sorted);
   };
 
-  return (
+  return (    
     <div className="paragraphs">
-      {paragraphs.map((paragraph) => (
-        <Paragraph
-          connection={connection}
-          documentId={documentId}
-          paragraph={paragraph}
-          message={paragraph.message}
-          position={paragraph.position}
-          numberOfParagraphs={paragraphs.length}
-          onDelete={deleteParagraph}
-        />
-      ))}
+      {paragraphItems != null && (
+        <ul>
+          {paragraphItems}
+        </ul>
+      )}
     </div>
   );
 }

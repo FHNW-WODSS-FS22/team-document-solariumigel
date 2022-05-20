@@ -19,7 +19,7 @@ class DocumentsOverview extends Component {
       user: "",
       documentName: "",
       addDocumentPopup: false,
-      loginPopup: false,
+      loginPopup: false
     };
   }
 
@@ -87,6 +87,7 @@ class DocumentsOverview extends Component {
         <div className="documentContent">
         <LoginPopup
                 onChange={(value) => {this.changeUserName(value);}} 
+                currentUser = {this.state.user}
                 trigger={this.state.loginPopup} 
                 setTrigger={() => this.setState({loginPopup: false})}
                 >
@@ -105,7 +106,6 @@ class DocumentsOverview extends Component {
                 <Link
                       to={"/documents/" + document.id}
                       state={{user: this.state.user}}
-                      onClick={() => (this.api.selected = document)}
                       style={{ textDecoration: 'none' }}
                   >
                   <img className="docImg" src="https://picsum.photos/400"/>

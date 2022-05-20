@@ -53,6 +53,18 @@ export default class ApiController {
     }
   }
 
+  async getDocument(documentId){
+    try {
+      const promise = await makeCall(this.buildRequest("GET", '/document/' + documentId));
+      console.log("setDocument")
+      console.log(promise)
+      this.selected = promise
+      return promise
+    } catch (e) {
+      console.error("API: Could not fetch documents", e);
+    }
+  }
+
   /**
    * Post a new document to database
    * @param {Object} document

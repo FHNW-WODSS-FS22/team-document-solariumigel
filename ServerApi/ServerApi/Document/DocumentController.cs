@@ -19,6 +19,12 @@ namespace ServerApi.Document
             return _documentClient.FindAll();
         }
 
+        [HttpGet("{id}")]
+        public DocumentEntity GetDocument(string id)
+        {
+            return _documentClient.Find(id);
+        }
+
         [HttpPost]
         public string PostDocuments([FromBody] DocumentData data)
         {
@@ -30,7 +36,7 @@ namespace ServerApi.Document
                 Name = data.Name,
             };
 
-            document.Paragraph.Add(new ParagraphEntity { Id = Guid.NewGuid().ToString(), Owner = data.Owner, Position = 0, Text = "" }) ;
+            document.Paragraph.Add(new ParagraphEntity { Id = Guid.NewGuid().ToString(), Owner = data.Owner, Position = 1, Text = "" }) ;
 
             _documentClient.Insert(document);
             return guid;
