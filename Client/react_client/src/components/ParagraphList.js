@@ -7,8 +7,7 @@ import Paragraph from "../components/Paragraph";
  * @param props List of all paragraphs component
  */
 export default function ParagraphList(props) {
-  const { connection, documentId, user } = props;
-  const [paragraphs, setParagraphs] = useState(props.paragraphs);
+  const { connection, documentId, onDeleteParagraph, onChange, documentProvider, userProvider} = props;
   const [paragraphItems, setParagraphItems] = useState(props.paragraphItems);
 
   /**
@@ -16,20 +15,26 @@ export default function ParagraphList(props) {
    */
   useEffect(() => {    
     if (props.connection && props.connection.state  !== HubConnectionState.Connected) {
+      console.log("useEffect")
       connection.on("ListenForCreateParagraph", listenForCreateParagraph);
       connection.on("ListenForDeleteParagraph", listenForDeleteParagraph);
-      connection.on("ResortParagraphs", sortParagraphs);
+      connection.on("ResortParagraphs", resortParagraphs);
     }
   });
+
+  // useEffect(() => {
+  //   console.log("dafdadf")
+  // }, [paragraphItems])
 
   /**
    * Listen for deletion of a paragraph
    * @param {object} paragraphId
    */
    const listenForDeleteParagraph = (paragraphId) => {
-    setParagraphs(paragraphs.filter((paragraph) => paragraph.id !== paragraphId));
-
+    console.log("paragraphItems")
+    console.log(paragraphItems)
     setParagraphItems((paragraphItems.filter((paragraph) => paragraph.props.paragraph.id !== paragraphId)));
+    onChange(paragraphId)
   };
   
   /**
@@ -37,28 +42,29 @@ export default function ParagraphList(props) {
    * @param {object} paragraph
    */
   const listenForCreateParagraph = (paragraph) => {
-    const paragraphItem = <Paragraph
+    const paragraphItem = (<Paragraph
             connection={connection}
             documentId={documentId}
             paragraph={paragraph}
             text={paragraph.text}
             position={paragraph.position}
-            user={user}
+            userProvider={userProvider}
             key={paragraph.id}
-            // onDelete={deleteParagraph}
-          />
-    setParagraphItems(paragraphItems.concat(paragraphItem));
-    setParagraphs(paragraphs.concat(paragraph));
-    sortParagraphs();
+            onDelete={onDeleteParagraph}
+          />)
+    sortParagraphs(paragraphItems.concat(paragraphItem));
   };
+
+  const sortParagraphs = (paramItems) => {
+    const sorted = paramItems.sort((a, b) => b.props.paragraph.position < a.props.paragraph.position ? 1 : -1);    
+    setParagraphItems(sorted);
+  }
 
   /**
    * Sort all paragraphs according to their position
    */
-  const sortParagraphs = () => {
-    console.log("sortParagraphs");
-    const sorted = [...paragraphItems].sort((a, b) => b.props.paragraph.position < a.props.paragraph.position ? 1 : -1);    
-    setParagraphItems(sorted);
+  const resortParagraphs = () => {
+    sortParagraphs([...paragraphItems])
   };
 
   return (    

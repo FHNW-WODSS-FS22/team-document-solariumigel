@@ -6,10 +6,12 @@ import { useEffect, useState } from "react";
  * @returns
  */
 export default function Paragraph(props) {
-  const { connection, documentId, onDelete } = props;
+  const { connection, documentId, onDelete, userProvider } = props;
   const [paragraph, setParagraph] = useState(props.paragraph);
   const [text, setText] = useState(props.text);
   const [position, setPosition] = useState(props.position);
+  const [readOnly, setReadOnly]  = useState();
+  const [lockedUser, setLockedUser]  = useState();
 
   /**
    * Constructor
@@ -18,6 +20,8 @@ export default function Paragraph(props) {
     if (props.connection) {
       connection.on("ListenForMessage", listenForText);
       connection.on("ListenForPosition", listenForPosition);
+      connection.on("ApplyLock", applyLock);
+      connection.on("ApplyReleaseLock", applyReleaseLock)
     }
   });
 
@@ -70,6 +74,32 @@ export default function Paragraph(props) {
     }
   };
 
+  const LockParagraph = () => {
+    console.log("LockParagraph")
+    console.log(userProvider.getUser())
+    connection.send("LockParagraph", documentId, paragraph.id, userProvider.getUser())
+  }
+
+  const applyLock = (paragraphId, lockedUser) => {
+    console.log("applyLock")
+    if(paragraph.id == paragraphId)
+    {
+      console.log("LockedUser");
+      console.log(lockedUser);
+      setLockedUser(lockedUser);
+      setReadOnly(userProvider.getUser() != lockedUser);
+    }
+  }
+
+  const applyReleaseLock = (paragraphId) =>{
+    console.log("applyLock")
+    if(paragraph.id == paragraphId)
+    {
+      setLockedUser("");
+      setReadOnly(false);
+    }
+  }
+
   return (
     <div>
       {paragraph != null && (
@@ -79,6 +109,10 @@ export default function Paragraph(props) {
                 <p className="pOwnerTxt">Paragraph owner: </p>
                 {paragraph.owner} 
               </div>
+              <div className="left"> 
+                <p className="pOwnerTxt">Wird bearbeitet von: </p>
+                {lockedUser} 
+              </div>
               <button className="deleteBtn" onClick={() => onDelete(paragraph.id)}></button>
             </div>
             <div className="paragraphBottom">
@@ -87,6 +121,8 @@ export default function Paragraph(props) {
                 cols="40"
                 onChange={(e) => updateText(e.target.value)}
                 value={text}
+                disabled={readOnly}
+                onClick={() => LockParagraph()}
               ></textarea>
               <div className="paragraphRating"> 
                 <button className="arrowUp" onClick={() => movePositionUp()}></button>

@@ -14,9 +14,9 @@ class DocumentsOverview extends Component {
   constructor(props) {
     super(props);
     this.api = props.api;
+    this.userProvider = props.userProvider;
     this.state = {
       documents: [],
-      user: "",
       documentName: "",
       addDocumentPopup: false,
       loginPopup: false
@@ -44,7 +44,7 @@ class DocumentsOverview extends Component {
    */
   createDocument() {
     this.api
-      .createDocument({ Owner: this.state.user, Name: this.state.documentName })
+      .createDocument({ Owner: this.state.userProvider.getUser(), Name: this.state.documentName })
       .then(() => {
         this.setState({ documents: [...this.api.documents] });
       });
@@ -65,7 +65,7 @@ class DocumentsOverview extends Component {
   }
 
   changeUserName(value){
-    this.setState({ user: value})
+    this.userProvider.setUser(value);
   }
 
   render() {
@@ -87,7 +87,7 @@ class DocumentsOverview extends Component {
         <div className="documentContent">
         <LoginPopup
                 onChange={(value) => {this.changeUserName(value);}} 
-                currentUser = {this.state.user}
+                userProvider = {this.userProvider}
                 trigger={this.state.loginPopup} 
                 setTrigger={() => this.setState({loginPopup: false})}
                 >
@@ -96,7 +96,7 @@ class DocumentsOverview extends Component {
             onChange={(value) => {this.changeDocumentName(value);}} 
             trigger={this.state.addDocumentPopup} 
             setTrigger={() => this.setState({addDocumentPopup: false})}
-            createDoc = {() => this.createDocument({Owner: this.state.user, Name: this.state.documentName })}
+            createDoc = {() => this.createDocument({Owner: this.userProvider.getUser(), Name: this.state.documentName })}
           >
           </AddDocumentPopup>
         </div>
@@ -105,7 +105,6 @@ class DocumentsOverview extends Component {
               <div key={document.id} className="card">
                 <Link
                       to={"/documents/" + document.id}
-                      state={{user: this.state.user}}
                       style={{ textDecoration: 'none' }}
                   >
                   <img className="docImg" src="https://picsum.photos/400"/>

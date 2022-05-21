@@ -8,10 +8,10 @@ import Paragraph from "../components/Paragraph";
  * Editor component
  */
 export default function DoctumentEditor(props) {
-  const { api, connectionBuilder } = props;
+  const { api, connectionBuilder, documentProvider, userProvider } = props;
   const [connection, setConnection] = useState();
   const [document, setDocument] = useState();
-  const [user, setUser] = useState();
+  const [paragraphs, setParagraphs] = useState();
   const { id } = useParams();
 
   /**
@@ -25,35 +25,62 @@ export default function DoctumentEditor(props) {
     if(api)
     {
       api.getDocument(id).then(doc => {
-        setDocument(doc);
+        documentProvider.setDocument(doc)
+        setDocument(doc)
       });
     }
   }, [api]);
 
   useEffect(() => {
-    if(connection && connection.state  !== HubConnectionState.Connected)
+    if(connection && connection.state !== HubConnectionState.Connected)
     {
       connection.start().then(() => {
-        connection.send("AddToDocument", api.selected.id);
+        if(userProvider.getUser()){
+          connection.send("AddToDocumentWithUser", api.selected.id, userProvider.getUser());
+        }
+        else{
+          connection.send("AddToDocument", api.selected.id);
+        }
+        
         connection.on("SetUserId", listenForDocument);
+        connection.on("ListenForCreateParagraph", listenForCreateParagraph);
+        connection.on("ListenForDeleteParagraph", listenForDeleteParagraph);
       });
     }
   }, [connection]);
+
+  /**
+ * Listen for deletion of a paragraph
+ * @param {object} paragraphId
+ */
+  const listenForDeleteParagraph = (paragraphId) => {
+    documentProvider.removeParagraph(paragraphId)
+    setParagraphs(documentProvider.getParagraphs())
+  };
+  
+  /**
+   * Listen for creation of a paragraph
+   * @param {object} paragraph
+   */
+  const listenForCreateParagraph = (paragraph) => {
+    documentProvider.addParagraph(paragraph)
+    /setParagraphs(documentProvider.getParagraphs())
+  };
 
 
   /**
    * Create a new paragraph
    */
   const createParagraph = () => {
-    connection.send("CreateParagraph", api.selected.id, user);
+    connection.send("CreateParagraph", api.selected.id, userProvider.getUser());
   };
 
   /**
    * Listen for document
    * @param {object} paragraphId
    */
-  const listenForDocument = (userId) => {
-    setUser(userId)
+  const listenForDocument = (user) => {
+    userProvider.setUser(user)
   };
 
   /**
@@ -64,9 +91,17 @@ export default function DoctumentEditor(props) {
     connection.send("DeleteParagraph", document.id, paragraphId);
   };
 
+  const onChange  = (paragraphId) => {
+    documentProvider.removeParagraph(paragraphId)
+    setParagraphs(documentProvider.getParagraphs())
+  }
+
   const ConverToItems = () => {
-    console.log("ConverToItems")
-    const sorted = document.paragraph.sort((a, b) => { return a.position > b.position ? 1 : -1});
+    if(documentProvider.hasParagraphs() == false)
+    {
+      return;
+    }
+    const sorted = documentProvider.getParagraphs().sort((a, b) => { return a.position > b.position ? 1 : -1});
     const sortedItems = sorted.map(paragraph => {
       return <Paragraph
         connection={connection}
@@ -74,7 +109,7 @@ export default function DoctumentEditor(props) {
         paragraph={paragraph}
         text={paragraph.text}
         position={paragraph.position}
-        user={user}
+        userProvider={userProvider}
         key={paragraph.id}
         onDelete={deleteParagraph}
       />
@@ -83,7 +118,7 @@ export default function DoctumentEditor(props) {
   }
 
   const NavigateBack = () => {
-    connection.send("RemoveFromDocument", api.selected.id, user);
+    connection.send("RemoveFromDocument", api.selected.id, userProvider.getUser());
     connection.stop();
   }
 
@@ -99,16 +134,21 @@ export default function DoctumentEditor(props) {
             </div>
             <div className="rightTop">
               <p>Document Owner: {document.owner}</p>
-              <p className="userName">User: {user}</p>
+              <p className="userName">User: {userProvider.getUser()}</p>
             </div>
           </div>
-          <ParagraphList
-            connection={connection}
-            documentId={document.id}
-            user={user}
-            paragraphs={document.paragraph}
-            paragraphItems={ConverToItems()}
-          />
+          <div className="userLeft">adfasdfasdf</div>
+          <div className={Math.random()}>
+            <ParagraphList
+              connection={connection}
+              documentId={document.id}
+              documentProvider={documentProvider}
+              userProvider={userProvider}
+              paragraphItems={ConverToItems()}
+              onDeleteParagraph={deleteParagraph}
+              onChange={onChange}
+            />
+          </div>
         </div>
       )}
     </div>

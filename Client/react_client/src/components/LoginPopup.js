@@ -9,7 +9,7 @@ function LoginPopup(props) {
             </p>
             <input
               className='docInput'
-              value={props.currentUser}
+              value={props.userProvider.getUser()}
               onChange={(e) => props.onChange(e.target.value)}
               placeholder="Name"
               required="required"
