@@ -2,17 +2,6 @@
 
 namespace ServerApi.Document
 {
-    public class User
-    {
-        public User(string name, string connectionId)
-        {
-            Name = name;
-            ConncetionId = connectionId;
-        }
-        public string ParagraphId {get; set;} = "";
-        public string Name{get;}
-        public string ConncetionId{get;}
-    }
     public class DocumentHub : Hub
     {
         private static readonly IDictionary<string, List<User>> _users= new Dictionary<string, List<User>>();
@@ -42,12 +31,6 @@ namespace ServerApi.Document
             _documentClient.UpdateText(documentId, paragraphId, message);
             await Clients.Group(documentId).SendAsync("ListenForMessage", paragraphId, message);
         }
-
-        // public async Task UpdatePosition(string documentId, string paragraphId, int position)
-        // {
-        //     _documentClient.UpdatePosition(documentId, paragraphId, position);
-        //     await Clients.Group(documentId).SendAsync("ListenForPosition", paragraphId, position);
-        // }
 
         public async Task UpdatePositionUp(string documentId, string paragraphId)
         {
