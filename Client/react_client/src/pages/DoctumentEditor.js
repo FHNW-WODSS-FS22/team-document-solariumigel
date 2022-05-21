@@ -13,6 +13,7 @@ export default function DoctumentEditor(props) {
   const [document, setDocument] = useState();
   const [paragraphs, setParagraphs] = useState();
   const [user, setUser] = useState();
+  const [documentUsers, setDocumentUsers] = useState([]);
   const { id } = useParams();
 
   /**
@@ -37,53 +38,48 @@ export default function DoctumentEditor(props) {
     {
       connection.start().then(() => {
         if(userProvider.getUser()){
-          connection.send("AddToDocumentWithUser", api.selected.id, userProvider.getUser());
+          connection.send("AddToDocumentWithUser", documentProvider.getDocument().id, userProvider.getUser());
         }
         else{
-          connection.send("AddToDocument", api.selected.id);
+          connection.send("AddToDocument", documentProvider.getDocument().id);
         }
         
-        connection.on("SetUserId", listenForDocument);
-        connection.on("ListenForCreateParagraph", listenForCreateParagraph);
-        connection.on("ListenForDeleteParagraph", listenForDeleteParagraph);
+        connection.on("SetCurrentUser", setCurrentUser);
+        connection.on("SetUserId", (e) => setUserId(e));
+        connection.on("UnSetUserId", unSetUserId);
+        
       });
     }
-  }, [connection]);
-
-  /**
- * Listen for deletion of a paragraph
- * @param {object} paragraphId
- */
-  const listenForDeleteParagraph = (paragraphId) => {
-    documentProvider.removeParagraph(paragraphId)
-    setParagraphs(documentProvider.getParagraphs())
-  };
-  
-  /**
-   * Listen for creation of a paragraph
-   * @param {object} paragraph
-   */
-  const listenForCreateParagraph = (paragraph) => {
-    documentProvider.addParagraph(paragraph)
-    /setParagraphs(documentProvider.getParagraphs())
-  };
+  }, [document]);
 
 
   /**
    * Create a new paragraph
    */
   const createParagraph = () => {
-    connection.send("CreateParagraph", api.selected.id, userProvider.getUser());
+    connection.send("CreateParagraph", documentProvider.getDocument().id, userProvider.getUser());
   };
 
   /**
    * Listen for document
    * @param {object} paragraphId
    */
-  const listenForDocument = (user) => {
+  const setCurrentUser = (user) => {
+    console.log("setCurrentUser")
+    console.log(user)
     userProvider.setUser(user);
     setUser(user);
   };
+
+  const setUserId = (user) => {
+    documentProvider.addUser(user);
+    setDocumentUsers(documentProvider.getUsers());
+  }
+
+  const unSetUserId = (user) => {
+    documentProvider.removeUser(user);
+    setDocumentUsers(documentProvider.getUsers());
+  }
 
   /**
  * Delete a paragraph
@@ -92,11 +88,6 @@ export default function DoctumentEditor(props) {
   const deleteParagraph = (paragraphId) => {
     connection.send("DeleteParagraph", document.id, paragraphId);
   };
-
-  const onChange  = (paragraphId) => {
-    documentProvider.removeParagraph(paragraphId)
-    setParagraphs(documentProvider.getParagraphs())
-  }
 
   const ConverToItems = () => {
     if(documentProvider.hasParagraphs() == false)
@@ -116,11 +107,13 @@ export default function DoctumentEditor(props) {
         onDelete={deleteParagraph}
       />
     })
+    
+    documentProvider.setParagraphItems(sortedItems)
     return sortedItems;
   }
 
   const NavigateBack = () => {
-    connection.send("RemoveFromDocument", api.selected.id, userProvider.getUser());
+    connection.send("RemoveFromDocument", documentProvider.getDocument().id, userProvider.getUser());
     connection.off();
     connection.stop();
   }
@@ -140,7 +133,7 @@ export default function DoctumentEditor(props) {
               <p className="userName">User: {userProvider.getUser()}</p>
             </div>
           </div>
-          <div className="userLeft">adfasdfasdf</div>
+          <div className="userLeft">{documentProvider.getUsers()}</div>
           <div className={Math.random()}>
             <ParagraphList
               connection={connection}
@@ -149,7 +142,6 @@ export default function DoctumentEditor(props) {
               userProvider={userProvider}
               paragraphItems={ConverToItems()}
               onDeleteParagraph={deleteParagraph}
-              onChange={onChange}
             />
           </div>
         </div>

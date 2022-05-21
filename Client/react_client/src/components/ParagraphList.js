@@ -7,7 +7,7 @@ import Paragraph from "../components/Paragraph";
  * @param props List of all paragraphs component
  */
 export default function ParagraphList(props) {
-  const { connection, documentId, onDeleteParagraph, onChange, documentProvider, userProvider} = props;
+  const { connection, documentId, onDeleteParagraph, documentProvider, userProvider} = props;
   const [paragraphItems, setParagraphItems] = useState(props.paragraphItems);
 
   /**
@@ -15,26 +15,20 @@ export default function ParagraphList(props) {
    */
   useEffect(() => {    
     if (props.connection && props.connection.state  !== HubConnectionState.Connected) {
-      console.log("useEffect")
       connection.on("ListenForCreateParagraph", listenForCreateParagraph);
       connection.on("ListenForDeleteParagraph", listenForDeleteParagraph);
       connection.on("ResortParagraphs", resortParagraphs);
     }
   });
 
-  // useEffect(() => {
-  //   console.log("dafdadf")
-  // }, [paragraphItems])
-
   /**
    * Listen for deletion of a paragraph
    * @param {object} paragraphId
    */
    const listenForDeleteParagraph = (paragraphId) => {
-    console.log("paragraphItems")
-    console.log(paragraphItems)
-    setParagraphItems((paragraphItems.filter((paragraph) => paragraph.props.paragraph.id !== paragraphId)));
-    onChange(paragraphId)
+    documentProvider.removeParagraph(paragraphId)
+    documentProvider.removeParagraphItem(paragraphId)
+    sortParagraphs(documentProvider.getParagraphItems());
   };
   
   /**
@@ -50,13 +44,14 @@ export default function ParagraphList(props) {
             position={paragraph.position}
             userProvider={userProvider}
             key={paragraph.id}
-            onDelete={onDeleteParagraph}
-          />)
-    sortParagraphs(paragraphItems.concat(paragraphItem));
+            onDelete={(id) => onDeleteParagraph(id)}/>)
+    documentProvider.addParagraph(paragraph);
+    documentProvider.addParagraphItem(paragraphItem);
+    sortParagraphs(documentProvider.getParagraphItems());
   };
 
   const sortParagraphs = (paramItems) => {
-    const sorted = paramItems.sort((a, b) => b.props.paragraph.position < a.props.paragraph.position ? 1 : -1);    
+    const sorted = paramItems.sort((a, b) => b.props.paragraph.position < a.props.paragraph.position ? 1 : -1);
     setParagraphItems(sorted);
   }
 

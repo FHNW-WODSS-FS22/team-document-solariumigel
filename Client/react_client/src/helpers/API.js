@@ -13,7 +13,6 @@ export default class ApiController {
   constructor() {
     this.address = apiAdress;
     this.documents = [];
-    this.selected = null;
   }
 
   /**
@@ -55,11 +54,7 @@ export default class ApiController {
 
   async getDocument(documentId){
     try {
-      const promise = await makeCall(this.buildRequest("GET", '/document/' + documentId));
-      console.log("setDocument")
-      console.log(promise)
-      this.selected = promise
-      return promise
+      return await makeCall(this.buildRequest("GET", '/document/' + documentId));
     } catch (e) {
       console.error("API: Could not fetch documents", e);
     }
@@ -105,8 +100,7 @@ export async function makeCall(request) {
   const response = await fetch(request);
   if (response.ok) {
     if (request.method !== "DELETE") {
-      const result = await response.json();
-      return result;
+      return await response.json();
     }
   } else {
     console.error("API: Request Failed !", response);
