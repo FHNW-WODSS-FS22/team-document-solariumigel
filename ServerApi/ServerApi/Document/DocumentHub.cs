@@ -79,6 +79,7 @@ namespace ServerApi.Document
             var document = _documentClient.Find(documentId);
 
             await Clients.Client(Context.ConnectionId).SendAsync("SetUserId", guid, document);
+            // await Clients.Group(documentId).SendAsync(); //Client(Context.ConnectionId).SendAsync("SetUserId", guid, document);
         }
 
         public async Task RemoveFromDocument(string documentId, string user)
@@ -98,7 +99,7 @@ namespace ServerApi.Document
             {
                 Id = guid,
                 Owner=user,
-                Position=document.Paragraph.Max(h => h.Position) + 1,
+                Position= document.Paragraph.Any() ? document.Paragraph.Max(h => h.Position) + 1 : 1,
                 Text = ""
             };
             _documentClient.CreateParagraph(documentId, paragraph);
