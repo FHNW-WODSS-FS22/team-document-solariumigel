@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { HubConnectionState } from "@microsoft/signalr";
 
 /**
  * Paragraph component
@@ -17,7 +18,7 @@ export default function Paragraph(props) {
    * Constructor
    */
   useEffect(() => {
-    if (props.connection) {
+    if (props.connection && props.connection.state  !== HubConnectionState.Connected) {
       connection.on("ListenForMessage", listenForText);
       connection.on("ListenForPosition", listenForPosition);
       connection.on("ApplyLock", applyLock);
@@ -75,27 +76,24 @@ export default function Paragraph(props) {
   };
 
   const LockParagraph = () => {
-    console.log("LockParagraph")
-    console.log(userProvider.getUser())
-    connection.send("LockParagraph", documentId, paragraph.id, userProvider.getUser())
+    if(!lockedUser)
+    {
+      connection.send("LockParagraph", documentId, paragraph.id, userProvider.getUser())
+    }
   }
 
   const applyLock = (paragraphId, lockedUser) => {
-    console.log("applyLock")
     if(paragraph.id == paragraphId)
     {
-      console.log("LockedUser");
-      console.log(lockedUser);
       setLockedUser(lockedUser);
       setReadOnly(userProvider.getUser() != lockedUser);
     }
   }
 
   const applyReleaseLock = (paragraphId) =>{
-    console.log("applyLock")
     if(paragraph.id == paragraphId)
     {
-      setLockedUser("");
+      setLockedUser(null);
       setReadOnly(false);
     }
   }

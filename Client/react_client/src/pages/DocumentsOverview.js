@@ -64,10 +64,6 @@ class DocumentsOverview extends Component {
     this.setState({ documentName: value})
   }
 
-  changeUserName(value){
-    this.userProvider.setUser(value);
-  }
-
   render() {
     return (
       <div>
@@ -85,19 +81,16 @@ class DocumentsOverview extends Component {
           </div>
         </div>
         <div className="documentContent">
-        <LoginPopup
-                onChange={(value) => {this.changeUserName(value);}} 
-                userProvider = {this.userProvider}
-                trigger={this.state.loginPopup} 
-                setTrigger={() => this.setState({loginPopup: false})}
-                >
-                </LoginPopup>
+          <LoginPopup
+            userProvider = {this.userProvider}
+            trigger={this.state.loginPopup} 
+            setTrigger={() => this.setState({loginPopup: false})}>
+          </LoginPopup>
           <AddDocumentPopup  
             onChange={(value) => {this.changeDocumentName(value);}} 
             trigger={this.state.addDocumentPopup} 
             setTrigger={() => this.setState({addDocumentPopup: false})}
-            createDoc = {() => this.createDocument({Owner: this.userProvider.getUser(), Name: this.state.documentName })}
-          >
+            createDoc = {() => this.createDocument({Owner: this.userProvider.getUser(), Name: this.state.documentName })}>
           </AddDocumentPopup>
         </div>
         <div className="documents">

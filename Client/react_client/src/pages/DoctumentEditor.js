@@ -12,6 +12,7 @@ export default function DoctumentEditor(props) {
   const [connection, setConnection] = useState();
   const [document, setDocument] = useState();
   const [paragraphs, setParagraphs] = useState();
+  const [user, setUser] = useState();
   const { id } = useParams();
 
   /**
@@ -80,7 +81,8 @@ export default function DoctumentEditor(props) {
    * @param {object} paragraphId
    */
   const listenForDocument = (user) => {
-    userProvider.setUser(user)
+    userProvider.setUser(user);
+    setUser(user);
   };
 
   /**
@@ -119,6 +121,7 @@ export default function DoctumentEditor(props) {
 
   const NavigateBack = () => {
     connection.send("RemoveFromDocument", api.selected.id, userProvider.getUser());
+    connection.off();
     connection.stop();
   }
 

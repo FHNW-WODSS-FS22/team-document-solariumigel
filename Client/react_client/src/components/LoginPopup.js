@@ -1,6 +1,11 @@
 import React from 'react'
 
 function LoginPopup(props) {
+
+  const changeUserName = (username) =>{
+    props.userProvider.setUser(username);
+  }
+
   return (props.trigger) ? (
     <div className="LoginPopup"> 
        <div className='popup-inner'>
@@ -9,8 +14,8 @@ function LoginPopup(props) {
             </p>
             <input
               className='docInput'
-              value={props.userProvider.getUser()}
-              onChange={(e) => props.onChange(e.target.value)}
+              defaultValue={props.userProvider.getUser()}
+              onChange={(e) => changeUserName(e.target.value)}
               placeholder="Name"
               required="required"
             />
