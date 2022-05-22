@@ -1,9 +1,17 @@
 export default class UserProvider {
-    setUser(user) {
-        this.user = user;
-    }
+  /**
+   * Set the user to the browser's cookies
+   * @param {*} user
+   */
+  setUser(user) {
+    document.cookie = `username=${user}`;
+  }
 
-    getUser(){
-        return this.user;
-    }
+  /**
+   * Get the user from the browser's cookies
+   * @returns The user
+   */
+  getUser() {
+    return document.cookie.split("=")[1];
+  }
 }
