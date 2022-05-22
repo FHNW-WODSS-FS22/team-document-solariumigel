@@ -1,72 +1,74 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
-:root{
-  --black: #1A1A1D;
+:root {
+  --black: #1a1a1d;
   --grey: #4e4e50;
   --red: #6f2232;
   --pink: #950740;
   --highlight: #c3073f;
 }
 
-textarea:focus, input:focus{
+textarea:focus,
+input:focus {
   outline: none;
 }
 
-Link{
+Link {
   text-decoration: none;
 }
 
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-size: 21px;
   background: var(--black);
   color: White;
 }
 
-.documentContent{
+.documentContent {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: var( --black );
+  background-color: var(--black);
 }
 
-.top{
+.top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20px 5%;
+  gap: 2rem;
 }
 
 .rightTop,
-.topLeft{
+.topLeft {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.documentTitle{
+.documentTitle {
   padding-left: 30px;
   font-size: 40px;
   color: var(--highlight);
 }
 
 .addDocument,
-.addParagraph{
+.addParagraph {
   background: url("./icons/plus.png") no-repeat;
   background-size: contain;
   height: 20px;
@@ -77,7 +79,7 @@ Link{
   cursor: pointer;
 }
 
-.user{
+.user {
   background: url("./icons/user.png") no-repeat;
   background-size: contain;
   height: 25px;
@@ -88,19 +90,19 @@ Link{
   cursor: pointer;
 }
 
-.userName{
+.userName {
   padding-left: 1rem;
 }
 
-.docInput{
-  border: 0.5px solid var( --highlight);
+.docInput {
+  border: 0.5px solid var(--highlight);
   border-radius: 5px;
   background-color: none;
   padding: 5px;
 }
 
 .addDocumentPopup,
-.LoginPopup{
+.LoginPopup {
   position: fixed;
   top: 0;
   left: 0;
@@ -113,7 +115,7 @@ Link{
   z-index: 1000;
 }
 
-.popup-inner{
+.popup-inner {
   position: relative;
   padding: 32px;
   max-width: 640px;
@@ -125,11 +127,10 @@ Link{
 }
 
 .popup-inner .createDocument,
-.enterLogin
-{
+.enterLogin {
   margin-top: 25px;
   border: none;
-  background-color: var( --highlight);
+  background-color: var(--highlight);
   border-radius: 5px;
   width: 40%;
   align-self: center;
@@ -138,7 +139,7 @@ Link{
   z-index: 1000;
 }
 
-.popup-inner .closePopUp{
+.popup-inner .closePopUp {
   position: absolute;
   top: -5px;
   right: -5px;
@@ -150,12 +151,12 @@ Link{
   border: none;
 }
 
-.loginName{
+.loginName {
   padding-bottom: 20px;
   text-align: center;
 }
 
-.card{
+.card {
   position: relative;
   overflow: hidden;
   box-shadow: 0 2px 20px black;
@@ -168,23 +169,23 @@ Link{
   transition: transform 200ms ease-in;
 }
 
-.documents{
+.documents {
   padding: 1.5rem 10%;
   display: grid;
   justify-content: center;
-  grid-template-columns: repeat(3, minmax(12rem, 16rem));
-  grid-auto-flow:dense;
-  gap: 5rem;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-flow: dense;
+  gap: 2rem;
   align-items: center;
 }
 
-.docImg{
+.docImg {
   width: 100%;
   object-fit: cover;
   aspect-ratio: 1.1;
 }
 
-.docName{
+.docName {
   padding-top: 0.5rem;
   font-size: 21px;
   padding-left: 1rem;
@@ -192,7 +193,7 @@ Link{
   color: var(--highlight);
 }
 
-.docOwner{
+.docOwner {
   padding-top: 0.2rem;
   padding-bottom: 0.5rem;
   font-size: 18px;
@@ -200,7 +201,7 @@ Link{
   padding-left: 1rem;
 }
 
-.deleteBtn{
+.deleteBtn {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
@@ -214,24 +215,24 @@ Link{
   cursor: pointer;
 }
 
-.backArrow{
-    background: url("./icons/arrow.png") no-repeat;
-    background-size: contain;
-    height: 25px;
-    width: 25px;
-    background-color: transparent;
-    border: none;
-    margin-left: 25px;
-    cursor: pointer;
+.backArrow {
+  background: url("./icons/arrow.png") no-repeat;
+  background-size: contain;
+  height: 25px;
+  width: 25px;
+  background-color: transparent;
+  border: none;
+  margin-left: 25px;
+  cursor: pointer;
 }
 
-.paragraphs{
+.paragraphs {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.cardParagraph{
+.cardParagraph {
   padding: 1.5%;
   position: relative;
   overflow: hidden;
@@ -244,15 +245,15 @@ Link{
   margin-top: 2rem;
 }
 
-.paragraphHeader{
+.paragraphHeader {
   padding-bottom: 0.5rem;
 }
 
-.paragraphBottom{
- display: flex;
+.paragraphBottom {
+  display: flex;
 }
 
-.paragraphRating{
+.paragraphRating {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -260,14 +261,14 @@ Link{
   padding-left: 1rem;
 }
 
-.positionTxt{
+.positionTxt {
   font-weight: 21px;
   color: #c3073f;
   font-weight: bold;
   padding-bottom: 0.4rem;
 }
 
-.arrowUp{
+.arrowUp {
   background: url("./icons/arrow-up.png") no-repeat;
   background-size: contain;
   height: 25px;
@@ -277,7 +278,7 @@ Link{
   cursor: pointer;
 }
 
-.arrowDown{
+.arrowDown {
   background: url("./icons/arrow-down.png") no-repeat;
   background-size: contain;
   height: 25px;
@@ -287,13 +288,11 @@ Link{
   cursor: pointer;
 }
 
-.left{
+.left {
   display: flex;
-
 }
 
-.pOwnerTxt{
+.pOwnerTxt {
   color: var(--highlight);
   padding-right: 5px;
 }
-
