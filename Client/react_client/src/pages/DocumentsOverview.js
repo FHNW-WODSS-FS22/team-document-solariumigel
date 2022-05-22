@@ -45,6 +45,9 @@ class DocumentsOverview extends Component {
    * Create a new document
    */
   createDocument() {
+    if(!this.userProvider.getUser()){
+      this.userProvider.setUser(uuidv4())
+    }
     this.api
       .createDocument({ Owner: this.userProvider.getUser(), Name: this.state.documentName })
       .then(() => {
