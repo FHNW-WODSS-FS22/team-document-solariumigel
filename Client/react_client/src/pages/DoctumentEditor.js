@@ -45,7 +45,7 @@ export default function DoctumentEditor(props) {
         }
         
         connection.on("SetCurrentUser", setCurrentUser);
-        connection.on("SetUserId", (e) => setUserId(e));
+        connection.on("SetUserId", setUserId);
         connection.on("UnSetUserId", unSetUserId);
         
       });
@@ -65,18 +65,23 @@ export default function DoctumentEditor(props) {
    * @param {object} paragraphId
    */
   const setCurrentUser = (user) => {
-    console.log("setCurrentUser")
-    console.log(user)
     userProvider.setUser(user);
+    documentProvider.setDocumentUser([user])
     setUser(user);
   };
 
   const setUserId = (user) => {
+    console.log("setUserId")
+    console.log(user)
     documentProvider.addUser(user);
+    console.log("setUserIdAfter")
+    console.log(documentProvider.getUsers())
     setDocumentUsers(documentProvider.getUsers());
   }
 
   const unSetUserId = (user) => {
+    console.log("unSetUserId")
+    console.log(user)
     documentProvider.removeUser(user);
     setDocumentUsers(documentProvider.getUsers());
   }
@@ -114,6 +119,7 @@ export default function DoctumentEditor(props) {
 
   const NavigateBack = () => {
     connection.send("RemoveFromDocument", documentProvider.getDocument().id, userProvider.getUser());
+    documentProvider.setDocumentUsers([])
     connection.off();
     connection.stop();
   }
@@ -133,11 +139,10 @@ export default function DoctumentEditor(props) {
               <p className="userName">User: {userProvider.getUser()}</p>
             </div>
           </div>
-          <div className="userLeft">{documentProvider.getUsers()}</div>
+          <div className="userLeft"><ul>{documentProvider.getUsers() && documentProvider.getUsers().map((u) => <p key={u}>{u}</p>)}</ul></div>
           <div className={Math.random()}>
             <ParagraphList
               connection={connection}
-              documentId={document.id}
               documentProvider={documentProvider}
               userProvider={userProvider}
               paragraphItems={ConverToItems()}

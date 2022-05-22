@@ -7,7 +7,7 @@ import Paragraph from "../components/Paragraph";
  * @param props List of all paragraphs component
  */
 export default function ParagraphList(props) {
-  const { connection, documentId, onDeleteParagraph, documentProvider, userProvider} = props;
+  const { connection, onDeleteParagraph, documentProvider, userProvider} = props;
   const [paragraphItems, setParagraphItems] = useState(props.paragraphItems);
 
   /**
@@ -28,7 +28,7 @@ export default function ParagraphList(props) {
    const listenForDeleteParagraph = (paragraphId) => {
     documentProvider.removeParagraph(paragraphId)
     documentProvider.removeParagraphItem(paragraphId)
-    sortParagraphs(documentProvider.getParagraphItems());
+    sortParagraphs();
   };
   
   /**
@@ -38,7 +38,7 @@ export default function ParagraphList(props) {
   const listenForCreateParagraph = (paragraph) => {
     const paragraphItem = (<Paragraph
             connection={connection}
-            documentId={documentId}
+            documentId={documentProvider.getDocument().id}
             paragraph={paragraph}
             text={paragraph.text}
             position={paragraph.position}
@@ -47,11 +47,11 @@ export default function ParagraphList(props) {
             onDelete={(id) => onDeleteParagraph(id)}/>)
     documentProvider.addParagraph(paragraph);
     documentProvider.addParagraphItem(paragraphItem);
-    sortParagraphs(documentProvider.getParagraphItems());
+    sortParagraphs();
   };
 
-  const sortParagraphs = (paramItems) => {
-    const sorted = paramItems.sort((a, b) => b.props.paragraph.position < a.props.paragraph.position ? 1 : -1);
+  const sortParagraphs = () => {
+    const sorted = documentProvider.getParagraphItems().sort((a, b) => b.props.paragraph.position < a.props.paragraph.position ? 1 : -1);
     setParagraphItems(sorted);
   }
 
@@ -59,14 +59,15 @@ export default function ParagraphList(props) {
    * Sort all paragraphs according to their position
    */
   const resortParagraphs = () => {
-    sortParagraphs([...paragraphItems])
+    console.log("resortParagraphs")
+    sortParagraphs()
   };
 
   return (    
     <div className="paragraphs">
-      {paragraphItems != null && (
+      {paragraphItems && documentProvider.getParagraphItems() != null && (
         <ul>
-          {paragraphItems}
+          {documentProvider.getParagraphItems()}
         </ul>
       )}
     </div>
