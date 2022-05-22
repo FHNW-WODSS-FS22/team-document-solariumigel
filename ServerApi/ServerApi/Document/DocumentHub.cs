@@ -110,9 +110,6 @@ namespace ServerApi.Document
             }
 
             await Clients.Group(documentId).SendAsync("SetUserId", userName);
-
-            // var document = _documentClient.Find(documentId);
-            // await Clients.Group(documentId).SendAsync(); //Client(Context.ConnectionId).SendAsync("SetUserId", guid, document);
         }
 
         public async Task RemoveFromDocument(string documentId, string userName)
@@ -130,9 +127,6 @@ namespace ServerApi.Document
                 _users.Remove(documentId);
             }
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, documentId);
-
-            var document = _documentClient.Find(documentId);
-
             await Clients.Group(documentId).SendAsync("UnSetUserId", userName);
         }        
 
@@ -168,12 +162,6 @@ namespace ServerApi.Document
             }
             user.ParagraphId = paragraphId;
             await Clients.Group(documentId).SendAsync("ApplyLock", paragraphId, userName);
-        }
-
-        public async Task ReleaseLockParagraph(string documentId, string paragraphId, string user)
-        {
-            _users[documentId].Single(h => h.Name == user).ParagraphId = "";
-            await Clients.Group(documentId).SendAsync("ApplyReleaseLock", paragraphId);
         }
     }
 }

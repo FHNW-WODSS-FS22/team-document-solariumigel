@@ -6,6 +6,4 @@ export default class UserProvider {
     getUser(){
         return this.user;
     }
-
-
 }
