@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
 import AddDocumentPopup from "../components/AddDocumentPopup";
 import LoginPopup from "../components/LoginPopup";
+
 
 /**
  * Overview Component
@@ -44,7 +46,7 @@ class DocumentsOverview extends Component {
    */
   createDocument() {
     this.api
-      .createDocument({ Owner: this.state.userProvider.getUser(), Name: this.state.documentName })
+      .createDocument({ Owner: this.userProvider.getUser(), Name: this.state.documentName })
       .then(() => {
         this.setState({ documents: [...this.api.documents] });
       });
@@ -90,7 +92,7 @@ class DocumentsOverview extends Component {
             onChange={(value) => {this.changeDocumentName(value);}} 
             trigger={this.state.addDocumentPopup} 
             setTrigger={() => this.setState({addDocumentPopup: false})}
-            createDoc = {() => this.createDocument({Owner: this.userProvider.getUser(), Name: this.state.documentName })}>
+            createDoc = {() => this.createDocument()}>
           </AddDocumentPopup>
         </div>
         <div className="documents">
