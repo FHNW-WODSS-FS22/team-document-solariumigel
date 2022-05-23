@@ -6,12 +6,12 @@ import { useEffect, useState } from "react";
  * @returns
  */
 export default function Paragraph(props) {
-  const { connection, documentId, onDelete, userProvider, documentProvider } = props;
+  const { connection, documentId, onDelete, userProvider } = props;
   const [paragraph, setParagraph] = useState(props.paragraph);
   const [text, setText] = useState(props.text);
   const [position, setPosition] = useState(props.position);
-  const [readOnly, setReadOnly]  = useState();
-  const [lockedUser, setLockedUser]  = useState();
+  const [readOnly, setReadOnly] = useState();
+  const [lockedUser, setLockedUser] = useState();
 
   /**
    * Constructor
@@ -23,7 +23,7 @@ export default function Paragraph(props) {
       connection.on("ApplyLock", applyLock);
       connection.on("ApplyReleaseLock", applyReleaseLock);
     }
-  }, [connection]);
+  });
 
   /**
    * Update the message of the paragraph
@@ -51,8 +51,7 @@ export default function Paragraph(props) {
    * Move position of paragraph up by one
    */
   const movePositionUp = () => {
-    if(position != 1)
-    {
+    if (position !== 1) {
       connection.send("UpdatePositionUp", documentId, paragraph.id);
     }
   };
@@ -78,67 +77,74 @@ export default function Paragraph(props) {
   };
 
   const LockParagraph = () => {
-    if(!lockedUser)
-    {
-      connection.send("LockParagraph", documentId, paragraph.id, userProvider.getUser())
+    if (!lockedUser) {
+      connection.send(
+        "LockParagraph",
+        documentId,
+        paragraph.id,
+        userProvider.getUser()
+      );
     }
-  }
+  };
 
   const applyLock = (paragraphId, lockedUser) => {
-    if(paragraph.id == paragraphId)
-    {
+    if (paragraph.id === paragraphId) {
       setLockedUser(lockedUser);
-      setReadOnly(userProvider.getUser() != lockedUser);
+      setReadOnly(userProvider.getUser() !== lockedUser);
     }
-  }
+  };
 
-  const applyReleaseLock = (paragraphId) =>{
-    if(paragraph.id == paragraphId)
-    {
+  const applyReleaseLock = (paragraphId) => {
+    if (paragraph.id === paragraphId) {
       setLockedUser(null);
       setReadOnly(false);
     }
-  }
+  };
 
   const deleteParagraph = () => {
-    if(!readOnly)
-    {
-      onDelete(paragraph.id)
+    if (!readOnly) {
+      onDelete(paragraph.id);
     }
-  }
+  };
 
   return (
     <div>
       {paragraph != null && (
         <div className="cardParagraph">
-            <div className="paragraphHeader">
-              <div className="left"> 
-                <p className="pOwnerTxt">Paragraph owner: </p>
-                {paragraph.owner} 
-              </div>
-              <div className="left"> 
-                <p className="pOwnerTxt">Wird bearbeitet von: </p>
-                {lockedUser} 
-              </div>
-              <button className="deleteBtn" onClick={deleteParagraph}></button>
+          <div className="paragraphHeader">
+            <div className="left">
+              <p className="pOwnerTxt">Paragraph owner: </p>
+              {paragraph.owner}
             </div>
-            <div className="paragraphBottom">
-              <textarea
-                rows="4"
-                cols="40"
-                onChange={(e) => updateText(e.target.value)}
-                value={text}
-                disabled={readOnly}
-                onClick={() => LockParagraph()}
-              ></textarea>
-              <div className="paragraphRating"> 
-                <button className="arrowUp" onClick={() => movePositionUp()}></button>
-                  <p className="positionTxt"> { position } </p>
-                <button className="arrowDown" onClick={() => movePositionDown()}></button>
-              </div>
-            </div> 
+            <div className="left">
+              <p className="pOwnerTxt">Wird bearbeitet von: </p>
+              {lockedUser}
+            </div>
+            <button className="deleteBtn" onClick={deleteParagraph}></button>
+          </div>
+          <div className="paragraphBottom">
+            <textarea
+              rows="4"
+              cols="40"
+              onChange={(e) => updateText(e.target.value)}
+              value={text}
+              disabled={readOnly}
+              onClick={() => LockParagraph()}
+            ></textarea>
+            <div className="paragraphRating">
+              <button
+                className="arrowUp"
+                onClick={() => movePositionUp()}
+              ></button>
+              <p className="positionTxt"> {position} </p>
+              <button
+                className="arrowDown"
+                onClick={() => movePositionDown()}
+              ></button>
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
-}  
+}
