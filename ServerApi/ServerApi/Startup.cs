@@ -31,8 +31,7 @@ namespace ServerApi
                         builder
                             .AllowAnyHeader()
                             .AllowAnyMethod()
-                            .WithOrigins("https://localhost:7251", "http://localhost:5251", "http://localhost:4200", "http://localhost:3000")
-                            .AllowCredentials();
+                            .AllowAnyOrigin();
                     });
             });
 
@@ -52,8 +51,6 @@ namespace ServerApi
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseHttpsRedirection();
 
             app.UseCors(CorsPolicy);
             app.UseDefaultFiles();

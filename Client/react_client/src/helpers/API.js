@@ -1,7 +1,7 @@
 /**
  * Address of the api
  */
-export const apiAdress = "https://localhost:7287";
+export const apiAdress = "http://localhost:7287";
 
 /**
  * FETCH REQUESTS CONTROLLER

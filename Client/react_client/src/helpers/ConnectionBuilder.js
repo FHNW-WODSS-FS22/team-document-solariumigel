@@ -1,9 +1,9 @@
-import { HubConnectionBuilder } from "@microsoft/signalr";
+import { HubConnectionBuilder, HttpTransportType } from "@microsoft/signalr";
 
 /**
  * Address of the connection through signalR
  */
-export const connectionAdress = "https://localhost:7287/documentSocket";
+ export const connectionAdress = "http://localhost:7287/documentSocket"
 
 /**
  * CONNECTION CONTROLLER
@@ -23,9 +23,10 @@ export default class ConnectionBuilder {
   buildConnection() {
     try {
       const connection = new HubConnectionBuilder()
-        .withUrl(this.address)
-        .withAutomaticReconnect()
-        .build();
+        .withUrl(this.address, {
+          skipNegotiation: true,
+          transport: HttpTransportType.WebSockets
+      })
       return connection;
     } catch (e) {
       console.error("SignalR: Could not build a connection", e);
