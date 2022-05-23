@@ -11,6 +11,8 @@ export default function DoctumentEditor(props) {
   const { api, connectionBuilder, documentProvider, userProvider } = props;
   const [connection, setConnection] = useState();
   const [document, setDocument] = useState();
+  const [, setUser] = useState();
+  const [, setDocumentUsers] = useState([]);
   const { id } = useParams();
 
   /**
@@ -47,7 +49,7 @@ export default function DoctumentEditor(props) {
         }
       });
     }
-  });
+  }, [document]);
 
   /**
    * Create a new paragraph
@@ -67,14 +69,17 @@ export default function DoctumentEditor(props) {
   const setCurrentUser = (user) => {
     userProvider.setUser(user);
     documentProvider.setDocumentUser([user]);
+    setUser(user);
   };
 
   const setUserId = (user) => {
     documentProvider.addUser(user);
+    setDocumentUsers(documentProvider.getUsers());
   };
 
   const unSetUserId = (user) => {
     documentProvider.removeUser(user);
+    setDocumentUsers(documentProvider.getUsers());
   };
 
   /**

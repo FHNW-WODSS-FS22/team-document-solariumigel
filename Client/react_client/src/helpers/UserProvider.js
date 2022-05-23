@@ -4,7 +4,7 @@ export default class UserProvider {
    * @param {*} user
    */
   setUser(user) {
-    document.cookie = `username=${user}`;
+    document.cookie = `username=${user};path=/`;
   }
 
   /**
