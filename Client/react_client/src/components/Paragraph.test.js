@@ -27,14 +27,14 @@ const testDocument = {
 test('paragraph owner is correct', () => { 
     render(<Paragraph paragraph={testParagraph}/>);
     const paragraphOwner = screen.getByTestId('paragraph-owner');
-    expect(paragraphOwner.textContent).toBe("Paragraph owner: Peter");
+    expect(paragraphOwner.textContent).toBe("Paragraph creator: Peter");
     }
 )
 
 test('paragraph locked is correct', async () => { 
     render(<Paragraph paragraph={testParagraph}/>);
     const paragraphBearbeiter = screen.getByTestId('paragraph-bearbeiter');
-    expect(await paragraphBearbeiter.textContent).toBe("Wird bearbeitet von: ");
+    expect(await paragraphBearbeiter.textContent).toBe("Locked by: ");
     }
 )
 
