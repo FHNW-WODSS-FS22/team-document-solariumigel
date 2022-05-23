@@ -49,7 +49,7 @@ jobs:
         npm install
         npm run build --if-present
         npm run test --if-present
-      working-directory: Client/react-client
+      working-directory: Client/react_client
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v3
