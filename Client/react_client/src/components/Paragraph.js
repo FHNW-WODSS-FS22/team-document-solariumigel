@@ -131,9 +131,9 @@ export default function Paragraph(props) {
                 onClick={() => LockParagraph()}
               ></textarea>
               <div className="paragraphRating"> 
-                <button className="arrowUp" onClick={() => movePositionUp()}></button>
-                  <p className="positionTxt"> { position } </p>
-                <button className="arrowDown" onClick={() => movePositionDown()}></button>
+                <button data-testid="arrowup-btn" className="arrowUp" onClick={() => movePositionUp()}></button>
+                  <p data-testid="paragraph-position" className="positionTxt">{position}</p>
+                <button data-testid="arrowdown-btn" className="arrowDown" onClick={() => movePositionDown()}></button>
               </div>
             </div> 
         </div>
