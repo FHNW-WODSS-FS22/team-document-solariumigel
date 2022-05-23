@@ -25,7 +25,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: WoWeb-Client
-  AZURE_WEBAPP_PACKAGE_PATH: './Client/react_client/package-lock.json'
+  AZURE_WEBAPP_PACKAGE_PATH: './Client/react_client'
   NODE_VERSION: '14.8'
 
 permissions:
@@ -42,6 +42,7 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
+        cache-dependency-path: './Client/react_client/package-lock.json'
 
     - name: npm install, build, and test
       run: |
