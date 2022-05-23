@@ -169,6 +169,10 @@ Link {
   transition: transform 200ms ease-in;
 }
 
+.card > a {
+  width: 100%;
+}
+
 .documents {
   padding: 1.5rem 10%;
   display: grid;
