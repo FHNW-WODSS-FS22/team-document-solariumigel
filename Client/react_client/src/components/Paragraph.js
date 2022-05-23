@@ -21,7 +21,7 @@ export default function Paragraph(props) {
       connection.on("ListenForMessage", listenForText);
       connection.on("ListenForPosition", listenForPosition);
       connection.on("ApplyLock", applyLock);
-      connection.on("ApplyReleaseLock", applyReleaseLock)
+      connection.on("ApplyReleaseLock", applyReleaseLock);
     }
     return() => {
       connection.off("ListenForMessage");
@@ -106,6 +106,13 @@ export default function Paragraph(props) {
     }
   }
 
+  const deleteParagraph = () => {
+    if(!readOnly)
+    {
+      onDelete(paragraph.id)
+    }
+  }
+
   return (
     <div>
       {paragraph != null && (
@@ -119,7 +126,7 @@ export default function Paragraph(props) {
                 <p className="pOwnerTxt">Wird bearbeitet von: </p>
                 {lockedUser} 
               </div>
-              <button className="deleteBtn" onClick={() => onDelete(paragraph.id)}></button>
+              <button className="deleteBtn" onClick={deleteParagraph}></button>
             </div>
             <div className="paragraphBottom">
               <textarea
