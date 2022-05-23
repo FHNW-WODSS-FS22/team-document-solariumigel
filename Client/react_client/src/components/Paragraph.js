@@ -23,12 +23,6 @@ export default function Paragraph(props) {
       connection.on("ApplyLock", applyLock);
       connection.on("ApplyReleaseLock", applyReleaseLock);
     }
-    return() => {
-      connection.off("ListenForMessage");
-      connection.off("ListenForPosition");
-      connection.off("ApplyLock");
-      connection.off("ApplyReleaseLock");
-    }
   }, [connection]);
 
   /**
