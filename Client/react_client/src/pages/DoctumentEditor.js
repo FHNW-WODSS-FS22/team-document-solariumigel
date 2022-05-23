@@ -37,27 +37,18 @@ export default function DoctumentEditor(props) {
 
     if(connection && connection.state !== HubConnectionState.Connected)
     {
+      connection.on("SetCurrentUser", setCurrentUser);
+      connection.on("SetUserId", setUserId);
+      connection.on("UnSetUserId", unSetUserId); 
+
       connection.start().then(() => {
         if(userProvider.getUser()){
           connection.send("AddToDocumentWithUser", documentProvider.getDocument().id, userProvider.getUser());
         }
         else{
           connection.send("AddToDocument", documentProvider.getDocument().id);
-        }});
-        connection.on("SetCurrentUser", setCurrentUser);
-        connection.on("SetUserId", setUserId);
-        connection.on("UnSetUserId", unSetUserId);    
+        }});   
     }
-
-    // return() => {
-    //   if(connection)
-    //   {
-    //     console.log("DoctumentEditorOff")
-    //     connection.off("SetCurrentUser");
-    //     connection.off("SetUserId");
-    //     connection.off("UnSetUserId");
-    //   }
-    // }
   }, [document]);
 
 
@@ -122,7 +113,7 @@ export default function DoctumentEditor(props) {
 
   const NavigateBack = () => {
     connection.send("RemoveFromDocument", documentProvider.getDocument().id, userProvider.getUser());
-    documentProvider.setDocumentUsers([])
+    documentProvider.setDocumentUser([])
     connection.off();
     connection.stop();
   }

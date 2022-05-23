@@ -87,12 +87,12 @@ namespace ServerApi.Document
         public async Task AddToDocument(string documentId)
         {
             var guid = Guid.NewGuid().ToString();
-            await Clients.Client(Context.ConnectionId).SendAsync("SetCurrentUser", guid);
             await AddToDocumentWithUser(documentId, guid);
         }
 
         public async Task AddToDocumentWithUser(string documentId, string userName)
-        {
+        {            
+            await Clients.Client(Context.ConnectionId).SendAsync("SetCurrentUser", userName);
             var user = new User(userName, Context.ConnectionId);
             if(_users.ContainsKey(documentId))
             {
