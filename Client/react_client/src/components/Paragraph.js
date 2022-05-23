@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { HubConnectionState } from "@microsoft/signalr";
 
 /**
  * Paragraph component
@@ -7,7 +6,7 @@ import { HubConnectionState } from "@microsoft/signalr";
  * @returns
  */
 export default function Paragraph(props) {
-  const { connection, documentId, onDelete, userProvider } = props;
+  const { connection, documentId, onDelete, userProvider, documentProvider } = props;
   const [paragraph, setParagraph] = useState(props.paragraph);
   const [text, setText] = useState(props.text);
   const [position, setPosition] = useState(props.position);
@@ -18,13 +17,19 @@ export default function Paragraph(props) {
    * Constructor
    */
   useEffect(() => {
-    if (props.connection && props.connection.state  !== HubConnectionState.Connected) {
+    if (connection) {
       connection.on("ListenForMessage", listenForText);
       connection.on("ListenForPosition", listenForPosition);
       connection.on("ApplyLock", applyLock);
       connection.on("ApplyReleaseLock", applyReleaseLock)
     }
-  });
+    return() => {
+      connection.off("ListenForMessage");
+      connection.off("ListenForPosition");
+      connection.off("ApplyLock");
+      connection.off("ApplyReleaseLock");
+    }
+  }, [connection]);
 
   /**
    * Update the message of the paragraph
@@ -41,7 +46,10 @@ export default function Paragraph(props) {
    */
   const listenForText = (paragraphId, text) => {
     if (paragraph.id === paragraphId) {
+      // documentProvider.setParagraphText(paragraphId, text)
       setText(text);
+      paragraph.text = text;
+      setParagraph(paragraph);
     }
   };
 

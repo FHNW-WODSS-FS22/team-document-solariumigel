@@ -21,6 +21,11 @@ namespace ServerApi.Document
             {
                 await Clients.Group(document.Key).SendAsync("ApplyReleaseLock", user.ParagraphId);
             }
+            
+            if(!document.Value.Any())
+            {
+                _users.Remove(document.Key);
+            }
 
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, document.Key);
             await Clients.Group(document.Key).SendAsync("UnSetUserId", user.Name);
@@ -82,8 +87,8 @@ namespace ServerApi.Document
         public async Task AddToDocument(string documentId)
         {
             var guid = Guid.NewGuid().ToString();
-            await AddToDocumentWithUser(documentId, guid);
             await Clients.Client(Context.ConnectionId).SendAsync("SetCurrentUser", guid);
+            await AddToDocumentWithUser(documentId, guid);
         }
 
         public async Task AddToDocumentWithUser(string documentId, string userName)
@@ -98,7 +103,6 @@ namespace ServerApi.Document
                 _users.Add(documentId, new List<User>{user});
             }
 
-            await Groups.AddToGroupAsync(Context.ConnectionId, documentId);
 
             foreach(var userItem in _users[documentId].Where(h => h.Name != userName))
             {
@@ -110,6 +114,7 @@ namespace ServerApi.Document
             }
 
             await Clients.Group(documentId).SendAsync("SetUserId", userName);
+            await Groups.AddToGroupAsync(Context.ConnectionId, documentId);
         }
 
         public async Task RemoveFromDocument(string documentId, string userName)
@@ -149,6 +154,13 @@ namespace ServerApi.Document
         public async Task DeleteParagraph(string documentId, string paragraphId)
         { 
             _documentClient.DeleteParagraph(documentId, paragraphId);
+
+            var user = _users[documentId].SingleOrDefault(h => h.ParagraphId == paragraphId);
+            if(user != null)
+            {
+                user.ParagraphId = "";
+                await Clients.Group(documentId).SendAsync("ApplyReleaseLock", user.ParagraphId);
+            }
 
             await Clients.Group(documentId).SendAsync("ListenForDeleteParagraph", paragraphId);
         }

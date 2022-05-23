@@ -8,18 +8,23 @@ import Paragraph from "../components/Paragraph";
  */
 export default function ParagraphList(props) {
   const { connection, onDeleteParagraph, documentProvider, userProvider} = props;
-  const [paragraphItems, setParagraphItems] = useState(props.paragraphItems);
+  const [paragraphhtmlItems, setParagraphhtmlItems] = useState(props.paragraphItems);
 
   /**
    * Constructor
    */
   useEffect(() => {    
-    if (props.connection && props.connection.state  !== HubConnectionState.Connected) {
+    if (connection) {
       connection.on("ListenForCreateParagraph", listenForCreateParagraph);
       connection.on("ListenForDeleteParagraph", listenForDeleteParagraph);
       connection.on("ResortParagraphs", resortParagraphs);
     }
-  });
+    return() => {
+      connection.off("ListenForCreateParagraph");
+      connection.off("ListenForDeleteParagraph");
+      connection.off("ResortParagraphs");
+    }
+  }, [connection]);
 
   /**
    * Listen for deletion of a paragraph
@@ -40,6 +45,7 @@ export default function ParagraphList(props) {
             connection={connection}
             documentId={documentProvider.getDocument().id}
             paragraph={paragraph}
+            documentProvider={documentProvider}
             text={paragraph.text}
             position={paragraph.position}
             userProvider={userProvider}
@@ -51,21 +57,21 @@ export default function ParagraphList(props) {
   };
 
   const sortParagraphs = () => {
-    const sorted = documentProvider.getParagraphItems().sort((a, b) => b.props.paragraph.position < a.props.paragraph.position ? 1 : -1);
-    setParagraphItems(sorted);
+    const sorted = documentProvider.getParagraphItems().slice(0).sort((a, b) => a.props.paragraph.position > b.props.paragraph.position ? 1 : -1);
+    documentProvider.setParagraphItems(sorted)
+    setParagraphhtmlItems(sorted);
   }
 
   /**
    * Sort all paragraphs according to their position
    */
   const resortParagraphs = () => {
-    console.log("resortParagraphs")
     sortParagraphs()
   };
 
   return (    
     <div className="paragraphs">
-      {paragraphItems && documentProvider.getParagraphItems() != null && (
+      {paragraphhtmlItems != null && (
         <ul>
           {documentProvider.getParagraphItems()}
         </ul>

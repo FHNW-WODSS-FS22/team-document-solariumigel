@@ -34,6 +34,7 @@ export default function DoctumentEditor(props) {
   }, [api]);
 
   useEffect(() => {
+
     if(connection && connection.state !== HubConnectionState.Connected)
     {
       connection.start().then(() => {
@@ -42,14 +43,21 @@ export default function DoctumentEditor(props) {
         }
         else{
           connection.send("AddToDocument", documentProvider.getDocument().id);
-        }
-        
+        }});
         connection.on("SetCurrentUser", setCurrentUser);
         connection.on("SetUserId", setUserId);
-        connection.on("UnSetUserId", unSetUserId);
-        
-      });
+        connection.on("UnSetUserId", unSetUserId);    
     }
+
+    // return() => {
+    //   if(connection)
+    //   {
+    //     console.log("DoctumentEditorOff")
+    //     connection.off("SetCurrentUser");
+    //     connection.off("SetUserId");
+    //     connection.off("UnSetUserId");
+    //   }
+    // }
   }, [document]);
 
 
@@ -71,17 +79,11 @@ export default function DoctumentEditor(props) {
   };
 
   const setUserId = (user) => {
-    console.log("setUserId")
-    console.log(user)
     documentProvider.addUser(user);
-    console.log("setUserIdAfter")
-    console.log(documentProvider.getUsers())
     setDocumentUsers(documentProvider.getUsers());
   }
 
   const unSetUserId = (user) => {
-    console.log("unSetUserId")
-    console.log(user)
     documentProvider.removeUser(user);
     setDocumentUsers(documentProvider.getUsers());
   }
@@ -108,6 +110,7 @@ export default function DoctumentEditor(props) {
         text={paragraph.text}
         position={paragraph.position}
         userProvider={userProvider}
+        documentProvider={documentProvider}
         key={paragraph.id}
         onDelete={deleteParagraph}
       />
