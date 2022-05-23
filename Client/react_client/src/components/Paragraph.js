@@ -104,17 +104,16 @@ export default function Paragraph(props) {
         <div className="cardParagraph">
             <div className="paragraphHeader">
               <div className="left"> 
-                <p className="pOwnerTxt">Paragraph owner: </p>
-                {paragraph.owner} 
-              </div>
+                <p data-testid="paragraph-owner" className="pOwnerTxt">Paragraph owner: {paragraph.owner}</p>
+                </div>
               <div className="left"> 
-                <p className="pOwnerTxt">Wird bearbeitet von: </p>
-                {lockedUser} 
+                <p data-testid="paragraph-bearbeiter" className="pOwnerTxt">Wird bearbeitet von: {lockedUser}</p>
               </div>
-              <button className="deleteBtn" onClick={() => onDelete(paragraph.id)}></button>
+              <button data-testid="delete-btn" className="deleteBtn" onClick={() => onDelete(paragraph.id)}></button>
             </div>
             <div className="paragraphBottom">
               <textarea
+                data-testid="paragraph-textarea"
                 rows="4"
                 cols="40"
                 onChange={(e) => updateText(e.target.value)}
