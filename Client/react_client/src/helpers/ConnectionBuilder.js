@@ -26,7 +26,7 @@ export default class ConnectionBuilder {
         .withUrl(this.address, {
           skipNegotiation: true,
           transport: HttpTransportType.WebSockets
-      })
+      }).build();
       return connection;
     } catch (e) {
       console.error("SignalR: Could not build a connection", e);
