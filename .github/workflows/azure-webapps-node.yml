@@ -25,8 +25,8 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: WoWeb-Client
-  AZURE_WEBAPP_PACKAGE_PATH: './Client/react_client'
-  NODE_VERSION: '14.x'                # set this to the node version to use
+  AZURE_WEBAPP_PACKAGE_PATH: './Client/react_client/package-lock.json'
+  NODE_VERSION: '14.8'
 
 permissions:
   contents: read
