@@ -15,8 +15,8 @@ function AddDocumentPopup(props) {
                 placeholder= "Document Name"
                 onChange={(e) => props.onChange(e.target.value)}
             />
-            <button className="createDocument" onClick={() => { close(); createD();}} >Add</button>
-            <button className='closePopUp' onClick={() => {close();}}></button>
+            <button data-testid="create-btn" className="createDocument" onClick={() => { close(); createD();}} >Add</button>
+            <button data-testid="close-btn" className='closePopUp' onClick={() => {close();}}></button>
             {props.children}
        </div>
     </div>
