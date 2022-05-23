@@ -151,6 +151,7 @@ export default function DoctumentEditor(props) {
             </div>
           </div>
           <div className="userLeft">
+          <p>Current Users:</p>
             <ul>
               {documentProvider.getUsers() &&
                 documentProvider.getUsers().map((u) => <p key={u}>{u}</p>)}

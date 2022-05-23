@@ -113,10 +113,10 @@ export default function Paragraph(props) {
         <div className="cardParagraph">
             <div className="paragraphHeader">
               <div className="left"> 
-                <p data-testid="paragraph-owner" className="pOwnerTxt">Paragraph owner: {paragraph.owner}</p>
+                <p data-testid="paragraph-owner" className="pOwnerTxt">Paragraph creator: {paragraph.owner}</p>
                 </div>
               <div className="left"> 
-                <p data-testid="paragraph-bearbeiter" className="pOwnerTxt">Wird bearbeitet von: {lockedUser}</p>
+                <p data-testid="paragraph-bearbeiter" className="pOwnerTxt">Locked by: {lockedUser}</p>
               </div>
               <button data-testid="delete-btn" className="deleteBtn" onClick={deleteParagraph}></button>
             </div>
