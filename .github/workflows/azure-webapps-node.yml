@@ -25,7 +25,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: WoWeb-Client
-  AZURE_WEBAPP_PACKAGE_PATH: './Client/react_client'
+  AZURE_WEBAPP_PACKAGE_PATH: '.'
   NODE_VERSION: '14.8'
 
 permissions:
@@ -49,6 +49,7 @@ jobs:
         npm install
         npm run build --if-present
         npm run test --if-present
+      working-directory: Client/react-client
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v3
