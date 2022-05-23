@@ -32,3 +32,4 @@ test('should be able to type in input', async() => {
     fireEvent.click(buttonElement);
     expect(mockedSetTrigger).toHaveBeenCalledTimes(1);
   });
+
