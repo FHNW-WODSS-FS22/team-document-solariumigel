@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { HubConnectionState } from "@microsoft/signalr";
 
 /**
  * Paragraph component
@@ -11,18 +10,18 @@ export default function Paragraph(props) {
   const [paragraph, setParagraph] = useState(props.paragraph);
   const [text, setText] = useState(props.text);
   const [position, setPosition] = useState(props.position);
-  const [readOnly, setReadOnly]  = useState();
-  const [lockedUser, setLockedUser]  = useState();
+  const [readOnly, setReadOnly] = useState();
+  const [lockedUser, setLockedUser] = useState();
 
   /**
    * Constructor
    */
   useEffect(() => {
-    if (props.connection && props.connection.state  !== HubConnectionState.Connected) {
+    if (connection) {
       connection.on("ListenForMessage", listenForText);
       connection.on("ListenForPosition", listenForPosition);
       connection.on("ApplyLock", applyLock);
-      connection.on("ApplyReleaseLock", applyReleaseLock)
+      connection.on("ApplyReleaseLock", applyReleaseLock);
     }
   });
 
@@ -41,7 +40,10 @@ export default function Paragraph(props) {
    */
   const listenForText = (paragraphId, text) => {
     if (paragraph.id === paragraphId) {
+      // documentProvider.setParagraphText(paragraphId, text)
       setText(text);
+      paragraph.text = text;
+      setParagraph(paragraph);
     }
   };
 
@@ -49,8 +51,7 @@ export default function Paragraph(props) {
    * Move position of paragraph up by one
    */
   const movePositionUp = () => {
-    if(position != 1)
-    {
+    if (position !== 1) {
       connection.send("UpdatePositionUp", documentId, paragraph.id);
     }
   };
@@ -76,27 +77,35 @@ export default function Paragraph(props) {
   };
 
   const LockParagraph = () => {
-    if(!lockedUser)
-    {
-      connection.send("LockParagraph", documentId, paragraph.id, userProvider.getUser())
+    if (!lockedUser) {
+      connection.send(
+        "LockParagraph",
+        documentId,
+        paragraph.id,
+        userProvider.getUser()
+      );
     }
-  }
+  };
 
   const applyLock = (paragraphId, lockedUser) => {
-    if(paragraph.id == paragraphId)
-    {
+    if (paragraph.id === paragraphId) {
       setLockedUser(lockedUser);
-      setReadOnly(userProvider.getUser() != lockedUser);
+      setReadOnly(userProvider.getUser() !== lockedUser);
     }
-  }
+  };
 
-  const applyReleaseLock = (paragraphId) =>{
-    if(paragraph.id == paragraphId)
-    {
+  const applyReleaseLock = (paragraphId) => {
+    if (paragraph.id === paragraphId) {
       setLockedUser(null);
       setReadOnly(false);
     }
-  }
+  };
+
+  const deleteParagraph = () => {
+    if (!readOnly) {
+      onDelete(paragraph.id);
+    }
+  };
 
   return (
     <div>
@@ -109,7 +118,7 @@ export default function Paragraph(props) {
               <div className="left"> 
                 <p data-testid="paragraph-bearbeiter" className="pOwnerTxt">Wird bearbeitet von: {lockedUser}</p>
               </div>
-              <button data-testid="delete-btn" className="deleteBtn" onClick={() => onDelete(paragraph.id)}></button>
+              <button data-testid="delete-btn" className="deleteBtn" onClick={deleteParagraph}></button>
             </div>
             <div className="paragraphBottom">
               <textarea
@@ -131,4 +140,4 @@ export default function Paragraph(props) {
       )}
     </div>
   );
-}  
+}
